@@ -1,8 +1,6 @@
 package com.learning.repertoire_manager.service;
 
-import com.learning.repertoire_manager.model.Piece;
-import com.learning.repertoire_manager.model.Technique;
-import com.learning.repertoire_manager.model.User;
+import com.learning.repertoire_manager.model.*;
 import com.learning.repertoire_manager.repository.PieceRepository;
 import com.learning.repertoire_manager.repository.TechniqueRepository;
 import com.learning.repertoire_manager.repository.UserRepository;
@@ -36,8 +34,8 @@ public class PieceService {
         piece.setUser(user);
         piece.setTitle(title);
         piece.setComposer(composer);
-        piece.setDifficulty(Enum.valueOf(com.learning.repertoire_manager.model.Difficulty.class, difficulty));
-        piece.setStatus(Enum.valueOf(com.learning.repertoire_manager.model.Status.class, status));
+        piece.setDifficulty(Enum.valueOf(Difficulty.class, difficulty));
+        piece.setStatus(Enum.valueOf(Status.class, status));
         piece.setTechniques(techniques);
 
         return pieceRepository.save(piece);
