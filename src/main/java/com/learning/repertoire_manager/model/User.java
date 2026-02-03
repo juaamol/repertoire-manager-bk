@@ -1,12 +1,18 @@
 package com.learning.repertoire_manager.model;
 
 import jakarta.persistence.*;
+import lombok.*;
+
 import java.time.Instant;
-import java.util.UUID;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     @Id
@@ -23,7 +29,7 @@ public class User {
     private Instant createdAt = Instant.now();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Piece> pieces;
-
-    // getters & setters
 }

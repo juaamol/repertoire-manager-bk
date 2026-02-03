@@ -1,4 +1,4 @@
-package com.learning.repertoire_manager.repertoire;
+package com.learning.repertoire_manager.repository;
 
 import com.learning.repertoire_manager.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;

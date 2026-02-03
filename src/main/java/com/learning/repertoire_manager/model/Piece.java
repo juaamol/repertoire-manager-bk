@@ -1,20 +1,27 @@
 package com.learning.repertoire_manager.model;
 
 import jakarta.persistence.*;
+import lombok.*;
+
 import java.time.Instant;
-import java.util.UUID;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "pieces")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Piece {
-
     @Id
     @GeneratedValue
     private UUID id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private User user;
 
     @Column(nullable = false)
@@ -23,12 +30,12 @@ public class Piece {
     @Column(nullable = false)
     private String composer;
 
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Difficulty difficulty;
 
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Status status;
 
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -43,7 +50,7 @@ public class Piece {
         joinColumns = @JoinColumn(name = "piece_id"),
         inverseJoinColumns = @JoinColumn(name = "technique_id")
     )
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Technique> techniques;
-
-    // getters & setters
 }
