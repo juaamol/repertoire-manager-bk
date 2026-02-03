@@ -1,7 +1,7 @@
 package com.learning.repertoire_manager.config;
 
 import com.learning.repertoire_manager.model.*;
-import com.learning.repertoire_manager.repositories.*;
+import com.learning.repertoire_manager.repository.*;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
