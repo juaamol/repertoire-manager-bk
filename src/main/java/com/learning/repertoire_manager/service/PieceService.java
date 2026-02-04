@@ -101,10 +101,21 @@ public class PieceService {
                 Piece piece = pieceRepository.findById(pieceId)
                                 .orElseThrow(() -> new IllegalArgumentException("Piece not found"));
 
-                piece.setTitle(request.getTitle());
-                piece.setComposer(request.getComposer());
-                piece.setDifficulty(Difficulty.valueOf(request.getDifficulty()));
-                piece.setStatus(Status.valueOf(request.getStatus()));
+                if (request.getTitle() != null) {
+                        piece.setTitle(request.getTitle());
+                }
+
+                if (request.getComposer() != null) {
+                        piece.setComposer(request.getComposer());
+                }
+
+                if (request.getDifficulty() != null) {
+                        piece.setDifficulty(Difficulty.fromString(request.getDifficulty()));
+                }
+
+                if (request.getStatus() != null) {
+                        piece.setStatus(Status.fromString(request.getStatus()));
+                }
 
                 piece = pieceRepository.save(piece);
 
