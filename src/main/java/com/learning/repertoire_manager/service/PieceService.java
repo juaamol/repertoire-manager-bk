@@ -1,5 +1,6 @@
 package com.learning.repertoire_manager.service;
 
+import com.learning.repertoire_manager.dto.PieceResponseDto;
 import com.learning.repertoire_manager.model.*;
 import com.learning.repertoire_manager.repository.PieceRepository;
 import com.learning.repertoire_manager.repository.TechniqueRepository;
@@ -41,9 +42,26 @@ public class PieceService {
         return pieceRepository.save(piece);
     }
 
-    public List<Piece> getPiecesByUser(UUID userId) {
+    public List<PieceResponseDto> getPiecesForUser(UUID userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        return pieceRepository.findByUser(user);
+
+        return pieceRepository.findByUser(user).stream()
+                .map(piece -> PieceResponseDto.builder()
+                    .id(piece.getId())
+                    .title(piece.getTitle())
+                    .composer(piece.getComposer())
+                    .difficulty(piece.getDifficulty().name())
+                    .status(piece.getStatus().name())
+                    .techniques(
+                        piece
+                            .getTechniques()
+                            .stream()
+                            .map(Technique::getName)
+                            .toList()
+                        )
+                    .build()
+                )
+                .toList();
     }
 }
