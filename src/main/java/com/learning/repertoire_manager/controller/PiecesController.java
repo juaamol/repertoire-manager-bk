@@ -1,6 +1,6 @@
 package com.learning.repertoire_manager.controller;
 
-import com.learning.repertoire_manager.dto.PieceResponseDto;
+import com.learning.repertoire_manager.dto.*;
 import com.learning.repertoire_manager.service.PieceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -17,5 +17,10 @@ public class PiecesController {
     @GetMapping
     public List<PieceResponseDto> getPieces(@RequestParam UUID userId) {
         return pieceService.getPiecesForUser(userId);
+    }
+
+    @PostMapping
+    public PieceResponseDto createPiece(@RequestBody PieceCreateRequestDto request) {
+        return pieceService.createPiece(request);
     }
 }

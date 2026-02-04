@@ -1,6 +1,6 @@
 package com.learning.repertoire_manager.service;
 
-import com.learning.repertoire_manager.dto.PieceResponseDto;
+import com.learning.repertoire_manager.dto.*;
 import com.learning.repertoire_manager.model.*;
 import com.learning.repertoire_manager.repository.PieceRepository;
 import com.learning.repertoire_manager.repository.TechniqueRepository;
@@ -20,27 +20,47 @@ public class PieceService {
     private final TechniqueRepository techniqueRepository;
 
     @Transactional
-    public Piece createPiece(UUID userId, String title, String composer,
-                             String difficulty, String status, List<String> techniqueNames) {
+    public PieceResponseDto createPiece(PieceCreateRequestDto request) {
 
-        User user = userRepository.findById(userId)
+        User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        List<Technique> techniques = techniqueNames.stream()
-                .map(name -> techniqueRepository.findByName(name)
-                        .orElseGet(() -> techniqueRepository.save(new Technique(null, name, null))))
+        List<Technique> techniques = request.getTechniques().stream()
+                .map(name ->
+                        techniqueRepository.findByName(name)
+                                .orElseGet(() ->
+                                        techniqueRepository.save(
+                                                Technique.builder().name(name).build()
+                                        )
+                                )
+                )
                 .toList();
 
-        Piece piece = new Piece();
-        piece.setUser(user);
-        piece.setTitle(title);
-        piece.setComposer(composer);
-        piece.setDifficulty(Enum.valueOf(Difficulty.class, difficulty));
-        piece.setStatus(Enum.valueOf(Status.class, status));
-        piece.setTechniques(techniques);
+        Piece piece = Piece.builder()
+                .user(user)
+                .title(request.getTitle())
+                .composer(request.getComposer())
+                .difficulty(Difficulty.fromString(request.getDifficulty()))
+                .status(Status.fromString(request.getStatus()))
+                .techniques(techniques)
+                .build();
 
-        return pieceRepository.save(piece);
+        Piece saved = pieceRepository.save(piece);
+
+        return PieceResponseDto.builder()
+                .id(saved.getId())
+                .title(saved.getTitle())
+                .composer(saved.getComposer())
+                .difficulty(saved.getDifficulty().name())
+                .status(saved.getStatus().name())
+                .techniques(
+                        saved.getTechniques().stream()
+                                .map(Technique::getName)
+                                .toList()
+                )
+                .build();
     }
+
 
     public List<PieceResponseDto> getPiecesForUser(UUID userId) {
         User user = userRepository.findById(userId)

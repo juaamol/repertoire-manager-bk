@@ -13,6 +13,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Piece {
     @Id
     @GeneratedValue
@@ -39,10 +40,10 @@ public class Piece {
     private Status status;
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    private Instant createdAt = Instant.now();
+    private Instant createdAt;
 
     @Column(name = "updated_at", nullable = false)
-    private Instant updatedAt = Instant.now();
+    private Instant updatedAt;
 
     @ManyToMany
     @JoinTable(
@@ -53,4 +54,16 @@ public class Piece {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<Technique> techniques;
+
+    @PrePersist
+    protected void onCreate() {
+        Instant now = Instant.now();
+        this.createdAt = now;
+        this.updatedAt = now;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = Instant.now();
+    }
 }
