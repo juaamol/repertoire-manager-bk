@@ -3,6 +3,8 @@ package com.learning.repertoire_manager.controller;
 import com.learning.repertoire_manager.dto.*;
 import com.learning.repertoire_manager.service.PieceService;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,7 +22,7 @@ public class PiecesController {
     }
 
     @PostMapping
-    public PieceResponseDto createPiece(@RequestBody PieceCreateRequestDto request) {
+    public PieceResponseDto createPiece(@RequestBody @Validated PieceCreateRequestDto request) {
         return pieceService.createPiece(request);
     }
 }
