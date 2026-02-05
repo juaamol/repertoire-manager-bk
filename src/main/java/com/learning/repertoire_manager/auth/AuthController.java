@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
-
     private final AuthService authService;
 
     @PostMapping("/register")
     public AuthResponseDto register(@Valid @RequestBody RegisterRequestDto request) {
+        System.out.println("REGISTER ENDPOINT HIT");
         authService.register(request);
         return new AuthResponseDto("User registered successfully");
     }
