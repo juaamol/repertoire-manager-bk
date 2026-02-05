@@ -1,4 +1,4 @@
-package com.learning.repertoire_manager.auth;
+package com.learning.repertoire_manager.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -6,7 +6,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
-public class SecurityBeansConfig {
+public class PasswordConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
