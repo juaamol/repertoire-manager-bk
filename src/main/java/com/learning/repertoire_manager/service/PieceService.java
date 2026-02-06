@@ -4,7 +4,6 @@ import com.learning.repertoire_manager.dto.*;
 import com.learning.repertoire_manager.model.*;
 import com.learning.repertoire_manager.repository.PieceRepository;
 import com.learning.repertoire_manager.repository.TechniqueRepository;
-import com.learning.repertoire_manager.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,14 +17,11 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PieceService {
         private final PieceRepository pieceRepository;
-        private final UserRepository userRepository;
         private final TechniqueRepository techniqueRepository;
 
         @Transactional
         public PieceResponseDto createPiece(PieceCreateRequestDto request) {
                 UUID userId = getCurrentUserId();
-                User user = userRepository.findById(userId)
-                                .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
                 List<Technique> techniques = request.getTechniques().stream()
                                 .map(name -> techniqueRepository.findByName(name)
@@ -34,7 +30,7 @@ public class PieceService {
                                 .toList();
 
                 Piece piece = Piece.builder()
-                                .user(user)
+                                .user(User.builder().id(userId).build())
                                 .title(request.getTitle())
                                 .composer(request.getComposer())
                                 .difficulty(Difficulty.fromString(request.getDifficulty()))
@@ -42,122 +38,73 @@ public class PieceService {
                                 .techniques(techniques)
                                 .build();
 
-                Piece saved = pieceRepository.save(piece);
-
-                return PieceResponseDto.builder()
-                                .id(saved.getId())
-                                .title(saved.getTitle())
-                                .composer(saved.getComposer())
-                                .difficulty(saved.getDifficulty().name())
-                                .status(saved.getStatus().name())
-                                .techniques(
-                                                saved.getTechniques().stream()
-                                                                .map(Technique::getName)
-                                                                .toList())
-                                .build();
+                return toDto(pieceRepository.save(piece));
         }
 
         public List<PieceResponseDto> getPiecesWithFilters(String composer, String technique) {
                 UUID userId = getCurrentUserId();
-                User user = userRepository.findById(userId)
-                                .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
                 String safeComposer = (composer == null || composer.isBlank()) ? "" : composer;
-                List<Piece> pieces = pieceRepository.findByUserAndOptionalFilters(user, safeComposer, technique);
 
-                return pieces.stream()
-                                .map(piece -> PieceResponseDto.builder()
-                                                .id(piece.getId())
-                                                .title(piece.getTitle())
-                                                .composer(piece.getComposer())
-                                                .difficulty(piece.getDifficulty().name())
-                                                .status(piece.getStatus().name())
-                                                .techniques(piece.getTechniques().stream()
-                                                                .map(t -> t.getName())
-                                                                .toList())
-                                                .build())
+                return pieceRepository
+                                .findByUserIdAndOptionalFilters(userId, safeComposer, technique)
+                                .stream()
+                                .map(this::toDto)
                                 .toList();
         }
 
+        @Transactional
         public PieceResponseDto updatePiece(UUID pieceId, PieceUpdateRequestDto request) {
-                Piece piece = pieceRepository.findById(pieceId)
+                UUID userId = getCurrentUserId();
+
+                Piece piece = pieceRepository
+                                .findByIdAndUser_Id(pieceId, userId)
                                 .orElseThrow(() -> new IllegalArgumentException("Piece not found"));
 
-                if (request.getTitle() != null) {
+                if (request.getTitle() != null)
                         piece.setTitle(request.getTitle());
-                }
-
-                if (request.getComposer() != null) {
+                if (request.getComposer() != null)
                         piece.setComposer(request.getComposer());
-                }
-
-                if (request.getDifficulty() != null) {
+                if (request.getDifficulty() != null)
                         piece.setDifficulty(Difficulty.fromString(request.getDifficulty()));
-                }
-
-                if (request.getStatus() != null) {
+                if (request.getStatus() != null)
                         piece.setStatus(Status.fromString(request.getStatus()));
-                }
 
-                piece = pieceRepository.save(piece);
-
-                return PieceResponseDto.builder()
-                                .id(piece.getId())
-                                .title(piece.getTitle())
-                                .composer(piece.getComposer())
-                                .difficulty(piece.getDifficulty().name())
-                                .status(piece.getStatus().name())
-                                .techniques(piece.getTechniques().stream()
-                                                .map(t -> t.getName())
-                                                .toList())
-                                .build();
+                return toDto(pieceRepository.save(piece));
         }
 
+        @Transactional
         public void deletePiece(UUID pieceId) {
-                Piece piece = pieceRepository.findById(pieceId)
-                                .orElseThrow(() -> new IllegalArgumentException("Piece not found"));
-
-                pieceRepository.delete(piece);
+                UUID userId = getCurrentUserId();
+                pieceRepository.deleteByIdAndUser_Id(pieceId, userId);
         }
 
+        @Transactional
         public PieceResponseDto addTechniqueToPiece(UUID pieceId, String techniqueName) {
-                Piece piece = pieceRepository.findById(pieceId)
+                UUID userId = getCurrentUserId();
+                Piece piece = pieceRepository
+                                .findByIdAndUser_Id(pieceId, userId)
                                 .orElseThrow(() -> new IllegalArgumentException("Piece not found"));
 
                 Technique technique = techniqueRepository.findByName(techniqueName)
                                 .orElseThrow(() -> new IllegalArgumentException("Technique not found"));
 
                 piece.getTechniques().add(technique);
-                piece = pieceRepository.save(piece);
-
-                return PieceResponseDto.builder()
-                                .id(piece.getId())
-                                .title(piece.getTitle())
-                                .composer(piece.getComposer())
-                                .difficulty(piece.getDifficulty().name())
-                                .status(piece.getStatus().name())
-                                .techniques(piece.getTechniques().stream().map(Technique::getName).toList())
-                                .build();
+                return toDto(pieceRepository.save(piece));
         }
 
+        @Transactional
         public PieceResponseDto removeTechniqueFromPiece(UUID pieceId, UUID techniqueId) {
-                Piece piece = pieceRepository.findById(pieceId)
+                UUID userId = getCurrentUserId();
+                Piece piece = pieceRepository
+                                .findByIdAndUser_Id(pieceId, userId)
                                 .orElseThrow(() -> new IllegalArgumentException("Piece not found"));
 
                 Technique technique = techniqueRepository.findById(techniqueId)
                                 .orElseThrow(() -> new IllegalArgumentException("Technique not found"));
 
                 piece.getTechniques().remove(technique);
-                piece = pieceRepository.save(piece);
-
-                return PieceResponseDto.builder()
-                                .id(piece.getId())
-                                .title(piece.getTitle())
-                                .composer(piece.getComposer())
-                                .difficulty(piece.getDifficulty().name())
-                                .status(piece.getStatus().name())
-                                .techniques(piece.getTechniques().stream().map(Technique::getName).toList())
-                                .build();
+                return toDto(pieceRepository.save(piece));
         }
 
         private UUID getCurrentUserId() {
@@ -167,4 +114,17 @@ public class PieceService {
                                 .getPrincipal();
         }
 
+        private PieceResponseDto toDto(Piece piece) {
+                return PieceResponseDto.builder()
+                                .id(piece.getId())
+                                .title(piece.getTitle())
+                                .composer(piece.getComposer())
+                                .difficulty(piece.getDifficulty().name())
+                                .status(piece.getStatus().name())
+                                .techniques(
+                                                piece.getTechniques().stream()
+                                                                .map(Technique::getName)
+                                                                .toList())
+                                .build();
+        }
 }

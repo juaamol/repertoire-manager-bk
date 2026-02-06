@@ -1,26 +1,29 @@
 package com.learning.repertoire_manager.repository;
 
 import com.learning.repertoire_manager.model.Piece;
-import com.learning.repertoire_manager.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface PieceRepository extends JpaRepository<Piece, UUID> {
-    List<Piece> findByUser(User user);
+    Optional<Piece> findByIdAndUser_Id(UUID pieceId, UUID userId);
 
-    List<Piece> findByUserAndComposerContainingIgnoreCase(User user, String composer);
+    void deleteByIdAndUser_Id(UUID pieceId, UUID userId);
 
-    @Query("SELECT p FROM Piece p JOIN p.techniques t WHERE p.user = :user AND t.name = :technique")
-    List<Piece> findByUserAndTechnique(@Param("user") User user, @Param("technique") String technique);
-
-    @Query("SELECT p FROM Piece p JOIN p.techniques t WHERE p.user = :user AND (:composer IS NULL OR LOWER(p.composer) LIKE LOWER(CONCAT('%', :composer, '%'))) AND (:technique IS NULL OR t.name = :technique)")
-    List<Piece> findByUserAndOptionalFilters(
-        @Param("user") User user,
-        @Param("composer") String composer,
-        @Param("technique") String technique
-    );
+    @Query("""
+                SELECT p
+                FROM Piece p
+                JOIN p.techniques t
+                WHERE p.user.id = :userId
+                  AND (:composer IS NULL OR LOWER(p.composer) LIKE LOWER(CONCAT('%', :composer, '%')))
+                  AND (:technique IS NULL OR t.name = :technique)
+            """)
+    List<Piece> findByUserIdAndOptionalFilters(
+            @Param("userId") UUID userId,
+            @Param("composer") String composer,
+            @Param("technique") String technique);
 }
