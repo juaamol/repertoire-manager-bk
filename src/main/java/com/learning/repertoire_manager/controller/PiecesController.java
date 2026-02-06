@@ -26,6 +26,11 @@ public class PiecesController {
         return pieceService.getPiecesWithFilters(composer, technique);
     }
 
+    @GetMapping("/{id}")
+    public PieceResponseDto getPieceById(@PathVariable UUID id) {
+        return pieceService.getPieceById(id);
+    }
+
     @PostMapping
     public PieceResponseDto createPiece(@RequestBody @Validated PieceCreateRequestDto request) {
         return pieceService.createPiece(request);

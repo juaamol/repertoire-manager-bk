@@ -42,9 +42,20 @@ public class PieceService {
                 return toDto(pieceRepository.save(piece));
         }
 
+        @Transactional
+        public PieceResponseDto getPieceById(UUID pieceId) {
+                UUID userId = getCurrentUserId();
+                Piece piece = pieceRepository
+                                .findByIdAndUser_Id(pieceId, userId)
+                                .orElseThrow(() -> new ResourceNotFoundException("Piece not found"));
+
+                return toDto(piece);
+
+        }
+
+        @Transactional
         public List<PieceResponseDto> getPiecesWithFilters(String composer, String technique) {
                 UUID userId = getCurrentUserId();
-
                 String safeComposer = (composer == null || composer.isBlank()) ? "" : composer;
 
                 return pieceRepository
@@ -85,10 +96,10 @@ public class PieceService {
                 UUID userId = getCurrentUserId();
                 Piece piece = pieceRepository
                                 .findByIdAndUser_Id(pieceId, userId)
-                                .orElseThrow(() -> new IllegalArgumentException("Piece not found"));
+                                .orElseThrow(() -> new ResourceNotFoundException("Piece not found"));
 
                 Technique technique = techniqueRepository.findByName(techniqueName)
-                                .orElseThrow(() -> new IllegalArgumentException("Technique not found"));
+                                .orElseThrow(() -> new ResourceNotFoundException("Technique not found"));
 
                 piece.getTechniques().add(technique);
                 return toDto(pieceRepository.save(piece));
@@ -99,10 +110,10 @@ public class PieceService {
                 UUID userId = getCurrentUserId();
                 Piece piece = pieceRepository
                                 .findByIdAndUser_Id(pieceId, userId)
-                                .orElseThrow(() -> new IllegalArgumentException("Piece not found"));
+                                .orElseThrow(() -> new ResourceNotFoundException("Piece not found"));
 
                 Technique technique = techniqueRepository.findById(techniqueId)
-                                .orElseThrow(() -> new IllegalArgumentException("Technique not found"));
+                                .orElseThrow(() -> new ResourceNotFoundException("Technique not found"));
 
                 piece.getTechniques().remove(technique);
                 return toDto(pieceRepository.save(piece));
