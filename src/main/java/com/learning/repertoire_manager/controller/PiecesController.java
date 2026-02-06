@@ -21,10 +21,9 @@ public class PiecesController {
 
     @GetMapping
     public List<PieceResponseDto> getPieces(
-            @RequestParam UUID userId,
             @RequestParam(required = false) String composer,
             @RequestParam(required = false) String technique) {
-        return pieceService.getPiecesWithFilters(userId, composer, technique);
+        return pieceService.getPiecesWithFilters(composer, technique);
     }
 
     @PostMapping

@@ -6,6 +6,8 @@ import com.learning.repertoire_manager.repository.PieceRepository;
 import com.learning.repertoire_manager.repository.TechniqueRepository;
 import com.learning.repertoire_manager.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,8 +23,8 @@ public class PieceService {
 
         @Transactional
         public PieceResponseDto createPiece(PieceCreateRequestDto request) {
-
-                User user = userRepository.findById(request.getUserId())
+                UUID userId = getCurrentUserId();
+                User user = userRepository.findById(userId)
                                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
                 List<Technique> techniques = request.getTechniques().stream()
@@ -55,28 +57,8 @@ public class PieceService {
                                 .build();
         }
 
-        public List<PieceResponseDto> getPiecesForUser(UUID userId) {
-                User user = userRepository.findById(userId)
-                                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
-                return pieceRepository.findByUser(user).stream()
-                                .map(piece -> PieceResponseDto.builder()
-                                                .id(piece.getId())
-                                                .title(piece.getTitle())
-                                                .composer(piece.getComposer())
-                                                .difficulty(piece.getDifficulty().name())
-                                                .status(piece.getStatus().name())
-                                                .techniques(
-                                                                piece
-                                                                                .getTechniques()
-                                                                                .stream()
-                                                                                .map(Technique::getName)
-                                                                                .toList())
-                                                .build())
-                                .toList();
-        }
-
-        public List<PieceResponseDto> getPiecesWithFilters(UUID userId, String composer, String technique) {
+        public List<PieceResponseDto> getPiecesWithFilters(String composer, String technique) {
+                UUID userId = getCurrentUserId();
                 User user = userRepository.findById(userId)
                                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
@@ -176,6 +158,13 @@ public class PieceService {
                                 .status(piece.getStatus().name())
                                 .techniques(piece.getTechniques().stream().map(Technique::getName).toList())
                                 .build();
+        }
+
+        private UUID getCurrentUserId() {
+                return (UUID) SecurityContextHolder
+                                .getContext()
+                                .getAuthentication()
+                                .getPrincipal();
         }
 
 }
