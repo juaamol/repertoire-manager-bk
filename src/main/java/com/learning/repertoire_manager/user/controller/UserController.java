@@ -34,7 +34,7 @@ public class UserController {
             throw new RuntimeException("Invalid credentials");
         }
 
-        String token = jwtService.generateToken(user.getId(), user.getEmail());
+        String token = jwtService.generateToken(user.getId(), user.getEmail(), user.getRole().name());
         return new LoginResponseDto(token);
     }
 

@@ -1,6 +1,7 @@
 package com.learning.repertoire_manager.user.service;
 
 import com.learning.repertoire_manager.user.dto.RegisterRequestDto;
+import com.learning.repertoire_manager.user.model.Role;
 import com.learning.repertoire_manager.user.model.User;
 import com.learning.repertoire_manager.user.repository.UserRepository;
 
@@ -24,6 +25,7 @@ public class UserService {
         User user = new User();
         user.setEmail(request.getEmail());
         user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
+        user.setRole(Role.USER);
 
         userRepository.save(user);
     }

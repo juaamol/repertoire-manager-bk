@@ -36,6 +36,10 @@ public class User {
     @EqualsAndHashCode.Exclude
     private List<Piece> pieces;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
+
     @PrePersist
     protected void onCreate() {
         Instant now = Instant.now();
