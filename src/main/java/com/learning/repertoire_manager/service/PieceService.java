@@ -1,6 +1,7 @@
 package com.learning.repertoire_manager.service;
 
 import com.learning.repertoire_manager.dto.*;
+import com.learning.repertoire_manager.exception.ResourceNotFoundException;
 import com.learning.repertoire_manager.model.*;
 import com.learning.repertoire_manager.repository.PieceRepository;
 import com.learning.repertoire_manager.repository.TechniqueRepository;
@@ -59,7 +60,7 @@ public class PieceService {
 
                 Piece piece = pieceRepository
                                 .findByIdAndUser_Id(pieceId, userId)
-                                .orElseThrow(() -> new IllegalArgumentException("Piece not found"));
+                                .orElseThrow(() -> new ResourceNotFoundException("Piece not found"));
 
                 if (request.getTitle() != null)
                         piece.setTitle(request.getTitle());
