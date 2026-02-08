@@ -41,6 +41,16 @@ public class Piece {
     @Column(nullable = false)
     private Status status;
 
+    @OneToOne(
+        mappedBy = "piece",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true,
+        fetch = FetchType.LAZY
+    )
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Sheet sheet;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 

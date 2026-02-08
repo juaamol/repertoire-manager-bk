@@ -1,18 +1,19 @@
 package com.learning.repertoire_manager.piece.dto;
 
 import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
 
 import java.util.List;
 import java.util.UUID;
 
-@Value
+@Data
 @Builder
 public class PieceResponseDto {
-    UUID id;
-    String title;
-    String composer;
-    String difficulty;
-    String status;
-    List<String> techniques;
+    private UUID id;
+    private String title;
+    private String composer;
+    private String difficulty;
+    private String status;
+    private List<String> techniques;
+    private SheetResponseDto sheet;
 }

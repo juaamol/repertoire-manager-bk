@@ -123,16 +123,37 @@ public class PieceService {
         }
 
         private PieceResponseDto toDto(Piece piece) {
+                SheetResponseDto sheetDto = null;
+                if (piece.getSheet() != null) {
+                        Sheet sheet = piece.getSheet();
+                        List<SheetResponseDto.SheetPageResponseDto> pages = sheet.getPages().stream()
+                                        .map(p -> SheetResponseDto.SheetPageResponseDto.builder()
+                                                        .order(p.getPageOrder())
+                                                        .path(p.getImagePath())
+                                                        .filename(p.getOriginalFilename())
+                                                        .contentType(p.getContentType())
+                                                        .build())
+                                        .toList();
+
+                        sheetDto = SheetResponseDto.builder()
+                                        .type(sheet.getType().name())
+                                        .pdfPath(sheet.getPdfPath())
+                                        .pdfFilename(sheet.getPdfFilename())
+                                        .pdfContentType(sheet.getPdfContentType())
+                                        .pages(pages)
+                                        .build();
+                }
+
                 return PieceResponseDto.builder()
                                 .id(piece.getId())
                                 .title(piece.getTitle())
                                 .composer(piece.getComposer())
                                 .difficulty(piece.getDifficulty().name())
                                 .status(piece.getStatus().name())
-                                .techniques(
-                                                piece.getTechniques().stream()
-                                                                .map(Technique::getName)
-                                                                .toList())
+                                .techniques(piece.getTechniques().stream()
+                                                .map(t -> t.getName())
+                                                .toList())
+                                .sheet(sheetDto)
                                 .build();
         }
 }
