@@ -4,8 +4,10 @@ import com.learning.repertoire_manager.exception.AccessDeniedException;
 import com.learning.repertoire_manager.piece.model.Sheet;
 import com.learning.repertoire_manager.piece.model.SheetPage;
 import com.learning.repertoire_manager.piece.model.SheetType;
+import com.learning.repertoire_manager.piece.dto.SheetPageResponseDto;
 import com.learning.repertoire_manager.piece.model.Piece;
 import com.learning.repertoire_manager.piece.repository.PieceRepository;
+import com.learning.repertoire_manager.piece.repository.SheetPageRepository;
 import com.learning.repertoire_manager.piece.repository.SheetRepository;
 import com.learning.repertoire_manager.piece.service.storage.StorageService;
 import com.learning.repertoire_manager.security.UserContext;
@@ -13,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.core.io.Resource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +28,7 @@ public class SheetService {
 
     private final PieceRepository pieceRepository;
     private final SheetRepository sheetRepository;
+    private final SheetPageRepository sheetPageRepository;
     private final StorageService storageService;
     private final UserContext userContext;
 
@@ -98,5 +102,47 @@ public class SheetService {
         }
 
         sheetRepository.save(sheet);
+    }
+
+    public Resource downloadPdf(UUID pieceId) {
+        UUID userId = userContext.getCurrentUserId();
+
+        Sheet sheet = sheetRepository
+                .findByPiece_IdAndPiece_User_Id(pieceId, userId)
+                .orElseThrow(() -> new AccessDeniedException("Not your piece"));
+
+        if (sheet.getType() != SheetType.PDF) {
+            throw new IllegalStateException("Piece does not have a PDF sheet");
+        }
+
+        return storageService.load(sheet.getPdfPath());
+    }
+
+    public Resource downloadImagePage(UUID pageId) {
+        UUID userId = userContext.getCurrentUserId();
+
+        SheetPage page = sheetPageRepository
+                .findByIdAndSheet_Piece_User_Id(pageId, userId)
+                .orElseThrow(() -> new AccessDeniedException("Not your page"));
+
+        return storageService.load(page.getImagePath());
+    }
+
+    public List<SheetPageResponseDto> listImagePages(UUID pieceId) {
+        UUID userId = userContext.getCurrentUserId();
+
+        Sheet sheet = sheetRepository
+                .findByPiece_IdAndPiece_User_Id(pieceId, userId)
+                .orElseThrow(() -> new AccessDeniedException("Not your piece"));
+
+        if (sheet.getType() != SheetType.IMAGES) {
+            throw new IllegalStateException("Piece does not have image sheets");
+        }
+
+        return sheetPageRepository
+                .findBySheet_IdOrderByPageOrderAsc(sheet.getId())
+                .stream()
+                .map(p -> new SheetPageResponseDto(p.getId(), p.getPageOrder()))
+                .toList();
     }
 }

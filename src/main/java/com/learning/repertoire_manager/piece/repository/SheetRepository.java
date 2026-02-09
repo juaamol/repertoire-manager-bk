@@ -11,4 +11,7 @@ public interface SheetRepository extends JpaRepository<Sheet, UUID> {
     Optional<Sheet> findByPiece_Id(UUID pieceId);
 
     void deleteByPiece_Id(UUID pieceId);
+
+    Optional<Sheet> findByPiece_IdAndPiece_User_Id(UUID pieceId, UUID userId);
+
 }

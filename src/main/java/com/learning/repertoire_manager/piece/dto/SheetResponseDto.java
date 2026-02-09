@@ -1,27 +1,13 @@
 package com.learning.repertoire_manager.piece.dto;
 
-import lombok.Builder;
-import lombok.Data;
-
 import java.util.List;
+import java.util.UUID;
 
-@Data
-@Builder
-public class SheetResponseDto {
-    private String type;
+import com.learning.repertoire_manager.piece.model.SheetType;
 
-    private String pdfPath;
-    private String pdfFilename;
-    private String pdfContentType;
-
-    private List<SheetPageResponseDto> pages;
-
-    @Data
-    @Builder
-    public static class SheetPageResponseDto {
-        private int order;
-        private String path;
-        private String filename;
-        private String contentType;
-    }
-}
+public record SheetResponseDto(
+        UUID id,
+        SheetType type,
+        String filename,
+        List<SheetPageResponseDto> pages
+) {}

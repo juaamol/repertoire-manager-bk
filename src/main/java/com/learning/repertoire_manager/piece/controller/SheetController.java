@@ -1,7 +1,11 @@
 package com.learning.repertoire_manager.piece.controller;
 
+import com.learning.repertoire_manager.piece.dto.SheetPageResponseDto;
 import com.learning.repertoire_manager.piece.service.SheetService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -9,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/pieces/{pieceId}/sheet")
+@RequestMapping("/api/pieces/{pieceId}/sheet")
 @RequiredArgsConstructor
 public class SheetController {
 
@@ -27,5 +31,28 @@ public class SheetController {
             @PathVariable UUID pieceId,
             @RequestParam("files") List<MultipartFile> files) {
         sheetService.uploadImages(pieceId, files);
+    }
+
+    @GetMapping("/pdf")
+    public ResponseEntity<Resource> downloadPdf(@PathVariable UUID pieceId) {
+        Resource resource = sheetService.downloadPdf(pieceId);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(resource);
+    }
+
+    @GetMapping("/images")
+    public List<SheetPageResponseDto> listImagePages(@PathVariable UUID pieceId) {
+        return sheetService.listImagePages(pieceId);
+    }
+
+    @GetMapping("/images/{pageId}")
+    public ResponseEntity<Resource> downloadImagePage(@PathVariable UUID pageId) {
+        Resource resource = sheetService.downloadImagePage(pageId);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(resource);
     }
 }
