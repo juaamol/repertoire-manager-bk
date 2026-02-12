@@ -1,9 +1,0 @@
-SELECT ?music_work ?music_workLabel ?instrument ?instrumentLabel ?composer ?composerLabel ?image WHERE {
-  ?music_work
-    wdt:P870 ?instrument;
-    wdt:P86 ?composer;
-    wdt:P136 wd:Q9730.
-  ?composer wdt:P18 ?image.
-  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
-}
-LIMIT 100000
