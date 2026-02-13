@@ -1,83 +1,70 @@
--- === USERS ===
-INSERT INTO users (email, password_hash) VALUES
-('violin@test.com', 'fake-hash')
-ON CONFLICT (email) DO NOTHING;
-
--- === TECHNIQUES ===
 INSERT INTO techniques (name) VALUES
-('Vibrato'),
-('Spiccato'),
+-- Common/General Articulations
 ('Legato'),
 ('Staccato'),
-('Double Stop')
+('Marcato'),
+('Tenuto'),
+('Glissando'),
+('Trills'),
+('Tremolo'),
+('Sforzando (sfz)'),
+
+-- Strings (Violin, Viola, Cello, Bass)
+('Vibrato'),
+('Spiccato'),
+('Détaché'),
+('Double Stops'),
+('Triple/Quadruple Stops'),
+('Pizzicato'),
+('Bartók Pizzicato (Snap)'),
+('Col Legno'),
+('Sul Ponticello'),
+('Sul Tasto'),
+('Harmonics (Natural)'),
+('Harmonics (Artificial)'),
+('Ricochet / Jeté'),
+('Portato / Louré'),
+('Sautillé'),
+('Martelé'),
+
+-- Woodwinds & Brass
+('Double Tonguing'),
+('Triple Tonguing'),
+('Flutter Tonguing'),
+('Circular Breathing'),
+('Multiphonics'),
+('Muted (Con Sordino)'),
+('Stopped Horn'),
+('Growl'),
+
+-- Keyboard (Piano, Organ)
+('Pedal Technique'),
+('Sostenuto Pedal'),
+('Soft Pedal (Una Corda)'),
+('Octave Technique'),
+('Finger Independence'),
+('Finger Substitution'),
+('Cross-hand Playing'),
+('Ornaments (Mordents/Turns)'),
+('Voicing (Inner Voices)'),
+
+-- Vocal (Soprano, Chorus, Ensemble)
+('Breath Support'),
+('Coloratura / Agility'),
+('Vocal Runs'),
+('Falsetto / Head Voice'),
+('Belting'),
+('Mixed Voice'),
+('Diction / Enunciation'),
+('Vocal Distortion (Fry/Growl)'),
+('Messa di Voce'),
+
+-- Percussion & Modern
+('Rolls'),
+('Mallet Technique (2/4 Mallets)'),
+('Dead Strokes'),
+('Rim Shots'),
+('Bowed Percussion'),
+('Electronic Triggering'),
+('Extended Techniques (General)')
 ON CONFLICT (name) DO NOTHING;
-
--- === PIECES ===
--- Violin Concerto in A minor (Bach)
-INSERT INTO pieces (user_id, title, composer, difficulty, status)
-SELECT id, 'Violin Concerto in A minor', 'Bach', 'INTERMEDIATE', 'LEARNING'
-FROM users
-WHERE email='violin@test.com'
-ON CONFLICT (user_id, title) DO NOTHING;
-
--- Air Varie (Oscar Rieding, Op. 23, No. 3)
-INSERT INTO pieces (user_id, title, composer, difficulty, status)
-SELECT id, 'Air Varie', 'Oscar Rieding, Op. 23, No. 3', 'INTERMEDIATE', 'LEARNING'
-FROM users
-WHERE email='violin@test.com'
-ON CONFLICT (user_id, title) DO NOTHING;
-
--- Air (Bach)
-INSERT INTO pieces (user_id, title, composer, difficulty, status)
-SELECT id, 'Air', 'Bach', 'INTERMEDIATE', 'LEARNING'
-FROM users
-WHERE email='violin@test.com'
-ON CONFLICT (user_id, title) DO NOTHING;
-
--- Canon in D (Pachelbel)
-INSERT INTO pieces (user_id, title, composer, difficulty, status)
-SELECT id, 'Canon in D', 'Pachelbel', 'INTERMEDIATE', 'LEARNING'
-FROM users
-WHERE email='violin@test.com'
-ON CONFLICT (user_id, title) DO NOTHING;
-
--- === PIECE_TECHNIQUES ===
--- Violin Concerto in A minor -> Vibrato, Spiccato
-INSERT INTO piece_techniques (piece_id, technique_id)
-SELECT p.id, t.id
-FROM pieces p, techniques t, users u
-WHERE p.title='Violin Concerto in A minor' 
-  AND u.email='violin@test.com'
-  AND p.user_id=u.id
-  AND t.name IN ('Vibrato', 'Spiccato')
-ON CONFLICT DO NOTHING;
-
--- Air Varie -> Legato, Vibrato
-INSERT INTO piece_techniques (piece_id, technique_id)
-SELECT p.id, t.id
-FROM pieces p, techniques t, users u
-WHERE p.title='Air Varie' 
-  AND u.email='violin@test.com'
-  AND p.user_id=u.id
-  AND t.name IN ('Legato', 'Vibrato')
-ON CONFLICT DO NOTHING;
-
--- Air (Bach) -> Legato, Vibrato
-INSERT INTO piece_techniques (piece_id, technique_id)
-SELECT p.id, t.id
-FROM pieces p, techniques t, users u
-WHERE p.title='Air' 
-  AND u.email='violin@test.com'
-  AND p.user_id=u.id
-  AND t.name IN ('Legato', 'Vibrato')
-ON CONFLICT DO NOTHING;
-
--- Canon in D -> Legato, Staccato, Double Stop
-INSERT INTO piece_techniques (piece_id, technique_id)
-SELECT p.id, t.id
-FROM pieces p, techniques t, users u
-WHERE p.title='Canon in D' 
-  AND u.email='violin@test.com'
-  AND p.user_id=u.id
-  AND t.name IN ('Legato', 'Staccato', 'Double Stop')
-ON CONFLICT DO NOTHING;
