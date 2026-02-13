@@ -1,0 +1,200 @@
+{
+    "composers": [
+        {
+            "name": "Adams",
+            "complete_name": "John Adams",
+            "epoch": "21st Century",
+            "birth": "1947-02-15",
+            "death": null,
+            "works": [
+                {
+                    "title": "Berceuse élégiaque",
+                    "subtitle": "For chamber orchestra",
+                    "instrumentation": [
+                        {
+                            "name": "Chamber Orchestra",
+                            "rank": null,
+                            "quantity": 1
+                        }
+                    ]
+                },
+                {
+                    "title": "Chamber Symphony",
+                    "subtitle": "",
+                    "instrumentation": [
+                        {
+                            "name": "Chamber Orchestra",
+                            "rank": null,
+                            "quantity": 1
+                        }
+                    ]
+                },
+                {
+                    "title": "China Gates",
+                    "subtitle": "",
+                    "instrumentation": [
+                        {
+                            "name": "Piano",
+                            "rank": null,
+                            "quantity": 1
+                        }
+                    ]
+                },
+                {
+                    "title": "Doctor Atomic",
+                    "subtitle": "Opera",
+                    "instrumentation": [
+                        {
+                            "name": "Symphony Orchestra",
+                            "rank": null,
+                            "quantity": 1
+                        },
+                        {
+                            "name": "Mixed Chorus",
+                            "rank": null,
+                            "quantity": 1
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Albinoni",
+            "complete_name": "Tomaso Albinoni",
+            "epoch": "Baroque",
+            "birth": "1671-06-08",
+            "death": "1751-01-17",
+            "works": [
+                {
+                    "title": "12 Concerti a cinque for Solo Violin, 2 Violins, Viola, Cello, and Continuo in A major, op. 10, no. 5 ",
+                    "subtitle": "",
+                    "instrumentation": [
+                        {
+                            "name": "Violin",
+                            "rank": "Solo",
+                            "quantity": 1
+                        },
+                        {
+                            "name": "Violin",
+                            "rank": null,
+                            "quantity": 2
+                        },
+                        {
+                            "name": "Viola",
+                            "rank": null,
+                            "quantity": 1
+                        },
+                        {
+                            "name": "Cello",
+                            "rank": null,
+                            "quantity": 1
+                        },
+                        {
+                            "name": "Basso Continuo",
+                            "rank": null,
+                            "quantity": 1
+                        }
+                    ]
+                },
+                {
+                    "title": "12 Concerti a cinque for Solo Violin, 2 Violins, Viola, Cello, and Continuo in B flat major, op. 10, no. 1 ",
+                    "subtitle": "",
+                    "instrumentation": [
+                        {
+                            "name": "Violin",
+                            "rank": "Solo",
+                            "quantity": 1
+                        },
+                        {
+                            "name": "Violin",
+                            "rank": null,
+                            "quantity": 2
+                        },
+                        {
+                            "name": "Viola",
+                            "rank": null,
+                            "quantity": 1
+                        },
+                        {
+                            "name": "Cello",
+                            "rank": null,
+                            "quantity": 1
+                        },
+                        {
+                            "name": "Basso Continuo",
+                            "rank": null,
+                            "quantity": 1
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Vivaldi",
+            "complete_name": "Antonio Vivaldi",
+            "epoch": "Baroque",
+            "birth": "1678-03-04",
+            "death": "1741-07-28",
+            "works": [
+                {
+                    "title": "2 Pieces in A major, for organ, RV.746",
+                    "subtitle": "",
+                    "instrumentation": [
+                        {
+                            "name": "Organ",
+                            "rank": null,
+                            "quantity": 1
+                        }
+                    ]
+                },
+                {
+                    "title": "6 Concertos for 2 Violins, Viola, Organ and Cello, op. 11",
+                    "subtitle": "",
+                    "instrumentation": [
+                        {
+                            "name": "Violin",
+                            "rank": null,
+                            "quantity": 2
+                        },
+                        {
+                            "name": "Viola",
+                            "rank": null,
+                            "quantity": 1
+                        },
+                        {
+                            "name": "Organ",
+                            "rank": null,
+                            "quantity": 1
+                        },
+                        {
+                            "name": "Cello",
+                            "rank": null,
+                            "quantity": 1
+                        }
+                    ]
+                },
+                {
+                    "title": "6 Concertos for 5 instruments, op. 6",
+                    "subtitle": "",
+                    "instrumentation": [
+                        {
+                            "name": "Violin",
+                            "rank": "Solo",
+                            "quantity": 1
+                        },
+                        {
+                            "name": "String Orchestra",
+                            "rank": null,
+                            "quantity": 1
+                        },
+                        {
+                            "name": "Basso Continuo",
+                            "rank": null,
+                            "quantity": 1
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

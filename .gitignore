@@ -35,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Flyway ###
+/src/main/resources/data/works-by-composer.min.json
