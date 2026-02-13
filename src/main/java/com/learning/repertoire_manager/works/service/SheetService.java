@@ -3,11 +3,11 @@ package com.learning.repertoire_manager.works.service;
 import com.learning.repertoire_manager.exception.AccessDeniedException;
 import com.learning.repertoire_manager.security.UserContext;
 import com.learning.repertoire_manager.works.dto.SheetPageResponseDto;
-import com.learning.repertoire_manager.works.model.Work;
+import com.learning.repertoire_manager.works.model.UserWork;
 import com.learning.repertoire_manager.works.model.Sheet;
 import com.learning.repertoire_manager.works.model.SheetPage;
 import com.learning.repertoire_manager.works.model.SheetType;
-import com.learning.repertoire_manager.works.repository.WorkRepository;
+import com.learning.repertoire_manager.works.repository.UserWorkRepository;
 import com.learning.repertoire_manager.works.repository.SheetPageRepository;
 import com.learning.repertoire_manager.works.repository.SheetRepository;
 import com.learning.repertoire_manager.works.service.storage.StorageService;
@@ -27,7 +27,7 @@ import java.util.UUID;
 @Transactional
 public class SheetService {
 
-    private final WorkRepository workRepository;
+    private final UserWorkRepository workRepository;
     private final SheetRepository sheetRepository;
     private final SheetPageRepository sheetPageRepository;
     private final StorageService storageService;
@@ -37,8 +37,8 @@ public class SheetService {
 
         UUID userId = userContext.getCurrentUserId();
 
-        Work work = workRepository
-                .findByIdAndUser_Id(workId, userId)
+        UserWork work = workRepository
+                .findByIdAndUserId(workId, userId)
                 .orElseThrow(() -> new AccessDeniedException("Not your work"));
 
         if (!"application/pdf".equals(file.getContentType())) {
@@ -65,8 +65,8 @@ public class SheetService {
 
         UUID userId = userContext.getCurrentUserId();
 
-        Work work = workRepository
-                .findByIdAndUser_Id(workId, userId)
+        UserWork work = workRepository
+                .findByIdAndUserId(workId, userId)
                 .orElseThrow(() -> new AccessDeniedException("Not your work"));
 
         if (files.isEmpty()) {

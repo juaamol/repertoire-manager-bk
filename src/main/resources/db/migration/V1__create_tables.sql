@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS user_composers (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    name VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL DEFAULT 'Unknown',
     short_name VARCHAR(255),
     epoch VARCHAR(100),
     birth DATE,

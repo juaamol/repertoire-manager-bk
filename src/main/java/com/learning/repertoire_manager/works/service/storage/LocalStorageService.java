@@ -12,8 +12,6 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.learning.repertoire_manager.work.service.storage.StorageService;
-
 @Service
 public class LocalStorageService implements StorageService {
 

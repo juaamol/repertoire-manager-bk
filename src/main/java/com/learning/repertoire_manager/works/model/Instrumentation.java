@@ -6,13 +6,13 @@ import lombok.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "techniques")
+@Table(name = "instrumentation")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Technique {
+public class Instrumentation {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;

@@ -75,6 +75,5 @@ INSERT INTO techniques (name, category_id) VALUES
 ('Dead Strokes', (SELECT id FROM categories WHERE name = 'Percussion')),
 ('Rim Shots', (SELECT id FROM categories WHERE name = 'Percussion')),
 ('Bowed Percussion', (SELECT id FROM categories WHERE name = 'Percussion')),
-('Electronic Triggering', (SELECT id FROM categories WHERE name = 'Electronic')),
-('Extended Techniques (General)', (SELECT id FROM categories WHERE name = 'General'))
+('Electronic Triggering', (SELECT id FROM categories WHERE name = 'Electronic'))
 ON CONFLICT (name) DO NOTHING;

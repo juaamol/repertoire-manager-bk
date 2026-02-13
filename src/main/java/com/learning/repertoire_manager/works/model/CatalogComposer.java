@@ -3,24 +3,25 @@ package com.learning.repertoire_manager.works.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
-@Table(name = "techniques")
+@Table(name = "catalog_composers")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Technique {
+public class CatalogComposer {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    private Category category;
-
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String name;
+    private String shortName;
+    private String epoch;
+    private LocalDate birth;
+    private LocalDate death;
 }

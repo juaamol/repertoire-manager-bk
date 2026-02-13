@@ -4,10 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.UUID;
-
-import com.learning.repertoire_manager.works.model.Work;
 
 @Entity
 @Table(name = "users")
@@ -17,24 +14,18 @@ import com.learning.repertoire_manager.works.model.Work;
 @AllArgsConstructor
 @Builder
 public class User {
-
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(name = "password_hash", nullable = false)
+    @Column(nullable = false)
     private String passwordHash;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(updatable = false)
     private Instant createdAt;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private List<Work> works;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

@@ -3,6 +3,9 @@ package com.learning.repertoire_manager.works.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -10,22 +13,29 @@ import org.springframework.web.bind.annotation.*;
 import com.learning.repertoire_manager.works.dto.WorkCreateRequestDto;
 import com.learning.repertoire_manager.works.dto.WorkResponseDto;
 import com.learning.repertoire_manager.works.dto.WorkUpdateRequestDto;
-import com.learning.repertoire_manager.works.service.WorkService;
+import com.learning.repertoire_manager.works.service.UserWorkService;
+import com.learning.repertoire_manager.works.service.UserWorkTechniqueService;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/works")
 @RequiredArgsConstructor
 public class WorksController {
-    private final WorkService workService;
+    private final UserWorkService workService;
+     private final UserWorkTechniqueService techniqueService;
 
     @GetMapping
-    public List<WorkResponseDto> getWorks(
+    public Page<WorkResponseDto> getWorks(
             @RequestParam(required = false) String composer,
-            @RequestParam(required = false) String technique) {
-        return workService.getWorksWithFilters(composer, technique);
+            @RequestParam(required = false) String technique,
+            @RequestParam(required = false) String instrument,
+            @RequestParam(required = false) String difficulty,
+            @RequestParam(required = false) String status,
+            @PageableDefault(size = 20) Pageable pageable) {
+
+        return workService.getWorksWithFilters(
+                composer, technique, instrument, difficulty, status, pageable);
     }
 
     @GetMapping("/{id}")
@@ -34,6 +44,7 @@ public class WorksController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public WorkResponseDto createWork(@RequestBody @Validated WorkCreateRequestDto request) {
         return workService.createWork(request);
     }
@@ -54,15 +65,15 @@ public class WorksController {
     @PostMapping("/{id}/techniques")
     public WorkResponseDto addTechnique(
             @PathVariable UUID id,
-            @RequestParam String techniqueName) {
-        return workService.addTechniqueToWork(id, techniqueName);
+            @RequestParam UUID techniqueId) {
+        return techniqueService.addTechniqueToWork(id, techniqueId);
     }
 
     @DeleteMapping("/{id}/techniques/{techniqueId}")
     public WorkResponseDto removeTechnique(
             @PathVariable UUID id,
             @PathVariable UUID techniqueId) {
-        return workService.removeTechniqueFromWork(id, techniqueId);
+        return techniqueService.removeTechniqueFromWork(id, techniqueId);
     }
 
 }
