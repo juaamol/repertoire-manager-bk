@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/pieces/{pieceId}/sheet")
+@RequestMapping("/api/works/{workId}/sheet")
 @RequiredArgsConstructor
 public class SheetController {
 
@@ -22,21 +22,21 @@ public class SheetController {
 
     @PostMapping("/pdf")
     public void uploadPdf(
-            @PathVariable UUID pieceId,
+            @PathVariable UUID workId,
             @RequestParam("file") MultipartFile file) {
-        sheetService.uploadPdf(pieceId, file);
+        sheetService.uploadPdf(workId, file);
     }
 
     @PostMapping("/images")
     public void uploadImages(
-            @PathVariable UUID pieceId,
+            @PathVariable UUID workId,
             @RequestParam("files") List<MultipartFile> files) {
-        sheetService.uploadImages(pieceId, files);
+        sheetService.uploadImages(workId, files);
     }
 
     @GetMapping("/pdf")
-    public ResponseEntity<Resource> downloadPdf(@PathVariable UUID pieceId) {
-        Resource resource = sheetService.downloadPdf(pieceId);
+    public ResponseEntity<Resource> downloadPdf(@PathVariable UUID workId) {
+        Resource resource = sheetService.downloadPdf(workId);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_PDF)
@@ -44,8 +44,8 @@ public class SheetController {
     }
 
     @GetMapping("/images")
-    public List<SheetPageResponseDto> listImagePages(@PathVariable UUID pieceId) {
-        return sheetService.listImagePages(pieceId);
+    public List<SheetPageResponseDto> listImagePages(@PathVariable UUID workId) {
+        return sheetService.listImagePages(workId);
     }
 
     @GetMapping("/images/{pageId}")

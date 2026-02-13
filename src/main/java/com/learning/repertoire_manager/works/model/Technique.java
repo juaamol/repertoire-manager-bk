@@ -6,9 +6,6 @@ import lombok.*;
 import java.util.List;
 import java.util.UUID;
 
-import com.learning.repertoire_manager.piece.model.Piece;
-
-
 @Entity
 @Table(name = "techniques")
 @Getter
@@ -28,5 +25,5 @@ public class Technique {
     @ManyToMany(mappedBy = "techniques")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private List<Piece> pieces;
+    private List<Work> works;
 }

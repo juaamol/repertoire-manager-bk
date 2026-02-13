@@ -10,7 +10,7 @@ import java.util.UUID;
 import com.learning.repertoire_manager.user.model.User;
 
 @Entity
-@Table(name = "pieces")
+@Table(name = "works")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -42,7 +42,7 @@ public class Work {
     private Status status;
 
     @OneToOne(
-        mappedBy = "piece",
+        mappedBy = "work",
         cascade = CascadeType.ALL,
         orphanRemoval = true,
         fetch = FetchType.LAZY
@@ -59,8 +59,8 @@ public class Work {
 
     @ManyToMany
     @JoinTable(
-        name = "piece_techniques",
-        joinColumns = @JoinColumn(name = "piece_id"),
+        name = "work_techniques",
+        joinColumns = @JoinColumn(name = "work_id"),
         inverseJoinColumns = @JoinColumn(name = "technique_id")
     )
     @ToString.Exclude

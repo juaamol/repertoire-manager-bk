@@ -1,9 +1,9 @@
 package com.learning.repertoire_manager.works.service;
 
 import com.learning.repertoire_manager.exception.ResourceNotFoundException;
-import com.learning.repertoire_manager.works.dto.PieceCreateRequestDto;
-import com.learning.repertoire_manager.works.dto.PieceResponseDto;
-import com.learning.repertoire_manager.works.dto.PieceUpdateRequestDto;
+import com.learning.repertoire_manager.works.dto.WorkCreateRequestDto;
+import com.learning.repertoire_manager.works.dto.WorkResponseDto;
+import com.learning.repertoire_manager.works.dto.WorkUpdateRequestDto;
 import com.learning.repertoire_manager.works.dto.SheetPageResponseDto;
 import com.learning.repertoire_manager.works.dto.SheetResponseDto;
 import com.learning.repertoire_manager.security.UserContext;
@@ -22,13 +22,13 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class PieceService {
-        private final WorkRepository pieceRepository;
+public class WorkService {
+        private final WorkRepository workRepository;
         private final UserContext userContext;
         private final TechniqueRepository techniqueRepository;
 
         @Transactional
-        public PieceResponseDto createPiece(PieceCreateRequestDto request) {
+        public WorkResponseDto createWork(WorkCreateRequestDto request) {
                 UUID userId = userContext.getCurrentUserId();
 
                 List<Technique> techniques = request.getTechniques().stream()
@@ -37,7 +37,7 @@ public class PieceService {
                                                                 Technique.builder().name(name).build())))
                                 .toList();
 
-                Work piece = Work.builder()
+                Work work = Work.builder()
                                 .user(User.builder().id(userId).build())
                                 .title(request.getTitle())
                                 .composer(request.getComposer())
@@ -46,26 +46,26 @@ public class PieceService {
                                 .techniques(techniques)
                                 .build();
 
-                return toDto(pieceRepository.save(piece));
+                return toDto(workRepository.save(work));
         }
 
         @Transactional
-        public PieceResponseDto getPieceById(UUID pieceId) {
+        public WorkResponseDto getWorkById(UUID workId) {
                 UUID userId = userContext.getCurrentUserId();
-                Work piece = pieceRepository
-                                .findByIdAndUser_Id(pieceId, userId)
-                                .orElseThrow(() -> new ResourceNotFoundException("Piece not found"));
+                Work work = workRepository
+                                .findByIdAndUser_Id(workId, userId)
+                                .orElseThrow(() -> new ResourceNotFoundException("Work not found"));
 
-                return toDto(piece);
+                return toDto(work);
 
         }
 
         @Transactional
-        public List<PieceResponseDto> getPiecesWithFilters(String composer, String technique) {
+        public List<WorkResponseDto> getWorksWithFilters(String composer, String technique) {
                 UUID userId = userContext.getCurrentUserId();
                 String safeComposer = (composer == null || composer.isBlank()) ? "" : composer;
 
-                return pieceRepository
+                return workRepository
                                 .findByUserIdAndOptionalFilters(userId, safeComposer, technique)
                                 .stream()
                                 .map(this::toDto)
@@ -73,64 +73,64 @@ public class PieceService {
         }
 
         @Transactional
-        public PieceResponseDto updatePiece(UUID pieceId, PieceUpdateRequestDto request) {
+        public WorkResponseDto updateWork(UUID workId, WorkUpdateRequestDto request) {
                 UUID userId = userContext.getCurrentUserId();
 
-                Work piece = pieceRepository
-                                .findByIdAndUser_Id(pieceId, userId)
-                                .orElseThrow(() -> new ResourceNotFoundException("Piece not found"));
+                Work work = workRepository
+                                .findByIdAndUser_Id(workId, userId)
+                                .orElseThrow(() -> new ResourceNotFoundException("Work not found"));
 
                 if (request.getTitle() != null)
-                        piece.setTitle(request.getTitle());
+                        work.setTitle(request.getTitle());
                 if (request.getComposer() != null)
-                        piece.setComposer(request.getComposer());
+                        work.setComposer(request.getComposer());
                 if (request.getDifficulty() != null)
-                        piece.setDifficulty(Difficulty.fromString(request.getDifficulty()));
+                        work.setDifficulty(Difficulty.fromString(request.getDifficulty()));
                 if (request.getStatus() != null)
-                        piece.setStatus(Status.fromString(request.getStatus()));
+                        work.setStatus(Status.fromString(request.getStatus()));
 
-                return toDto(pieceRepository.save(piece));
+                return toDto(workRepository.save(work));
         }
 
         @Transactional
-        public void deletePiece(UUID pieceId) {
+        public void deleteWork(UUID workId) {
                 UUID userId = userContext.getCurrentUserId();
-                pieceRepository.deleteByIdAndUser_Id(pieceId, userId);
+                workRepository.deleteByIdAndUser_Id(workId, userId);
         }
 
         @Transactional
-        public PieceResponseDto addTechniqueToPiece(UUID pieceId, String techniqueName) {
+        public WorkResponseDto addTechniqueToWork(UUID workId, String techniqueName) {
                 UUID userId = userContext.getCurrentUserId();
-                Work piece = pieceRepository
-                                .findByIdAndUser_Id(pieceId, userId)
-                                .orElseThrow(() -> new ResourceNotFoundException("Piece not found"));
+                Work work = workRepository
+                                .findByIdAndUser_Id(workId, userId)
+                                .orElseThrow(() -> new ResourceNotFoundException("Work not found"));
 
                 Technique technique = techniqueRepository.findByName(techniqueName)
                                 .orElseThrow(() -> new ResourceNotFoundException("Technique not found"));
 
-                piece.getTechniques().add(technique);
-                return toDto(pieceRepository.save(piece));
+                work.getTechniques().add(technique);
+                return toDto(workRepository.save(work));
         }
 
         @Transactional
-        public PieceResponseDto removeTechniqueFromPiece(UUID pieceId, UUID techniqueId) {
+        public WorkResponseDto removeTechniqueFromWork(UUID workId, UUID techniqueId) {
                 UUID userId = userContext.getCurrentUserId();
-                Work piece = pieceRepository
-                                .findByIdAndUser_Id(pieceId, userId)
-                                .orElseThrow(() -> new ResourceNotFoundException("Piece not found"));
+                Work work = workRepository
+                                .findByIdAndUser_Id(workId, userId)
+                                .orElseThrow(() -> new ResourceNotFoundException("Work not found"));
 
                 Technique technique = techniqueRepository.findById(techniqueId)
                                 .orElseThrow(() -> new ResourceNotFoundException("Technique not found"));
 
-                piece.getTechniques().remove(technique);
-                return toDto(pieceRepository.save(piece));
+                work.getTechniques().remove(technique);
+                return toDto(workRepository.save(work));
         }
 
-        private PieceResponseDto toDto(Work piece) {
+        private WorkResponseDto toDto(Work work) {
                 SheetResponseDto sheetDto = null;
 
-                if (piece.getSheet() != null) {
-                        Sheet sheet = piece.getSheet();
+                if (work.getSheet() != null) {
+                        Sheet sheet = work.getSheet();
 
                         sheetDto = switch (sheet.getType()) {
                                 case PDF -> new SheetResponseDto(
@@ -151,13 +151,13 @@ public class PieceService {
                         };
                 }
 
-                return new PieceResponseDto(
-                                piece.getId(),
-                                piece.getTitle(),
-                                piece.getComposer(),
-                                piece.getDifficulty().name(),
-                                piece.getStatus().name(),
-                                piece.getTechniques().stream().map(Technique::getName).toList(),
+                return new WorkResponseDto(
+                                work.getId(),
+                                work.getTitle(),
+                                work.getComposer(),
+                                work.getDifficulty().name(),
+                                work.getStatus().name(),
+                                work.getTechniques().stream().map(Technique::getName).toList(),
                                 sheetDto);
         }
 

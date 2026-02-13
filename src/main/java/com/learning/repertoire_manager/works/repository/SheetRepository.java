@@ -9,10 +9,10 @@ import java.util.UUID;
 
 public interface SheetRepository extends JpaRepository<Sheet, UUID> {
 
-    Optional<Sheet> findByPiece_Id(UUID pieceId);
+    Optional<Sheet> findByWork_Id(UUID workId);
 
-    void deleteByPiece_Id(UUID pieceId);
+    void deleteByWork_Id(UUID workId);
 
-    Optional<Sheet> findByPiece_IdAndPiece_User_Id(UUID pieceId, UUID userId);
+    Optional<Sheet> findByWork_IdAndWork_User_Id(UUID workId, UUID userId);
 
 }

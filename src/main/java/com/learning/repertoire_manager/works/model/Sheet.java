@@ -21,8 +21,8 @@ public class Sheet {
     private UUID id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "piece_id", nullable = false, unique = true)
-    private Work piece;
+    @JoinColumn(name = "work_id", nullable = false, unique = true)
+    private Work work;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

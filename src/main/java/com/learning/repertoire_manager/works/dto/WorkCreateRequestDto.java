@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Data
-public class PieceCreateRequestDto {
+public class WorkCreateRequestDto {
     @NotBlank(message = "title is required")
     private String title;
 

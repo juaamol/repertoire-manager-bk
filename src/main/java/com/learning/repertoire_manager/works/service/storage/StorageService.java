@@ -5,6 +5,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.core.io.Resource;
 
 public interface StorageService {
-    String store(UUID pieceId, MultipartFile file);
+    String store(UUID workId, MultipartFile file);
     Resource load(String path);
 }

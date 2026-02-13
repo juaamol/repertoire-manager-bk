@@ -11,13 +11,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface WorkRepository extends JpaRepository<Work, UUID> {
-    Optional<Work> findByIdAndUser_Id(UUID pieceId, UUID userId);
+    Optional<Work> findByIdAndUser_Id(UUID workId, UUID userId);
 
-    void deleteByIdAndUser_Id(UUID pieceId, UUID userId);
+    void deleteByIdAndUser_Id(UUID workId, UUID userId);
 
     @Query("""
                 SELECT p
-                FROM Piece p
+                FROM Work p
                 JOIN p.techniques t
                 WHERE p.user.id = :userId
                   AND (:composer IS NULL OR LOWER(p.composer) LIKE LOWER(CONCAT('%', :composer, '%')))

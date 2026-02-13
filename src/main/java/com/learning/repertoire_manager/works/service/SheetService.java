@@ -27,30 +27,30 @@ import java.util.UUID;
 @Transactional
 public class SheetService {
 
-    private final WorkRepository pieceRepository;
+    private final WorkRepository workRepository;
     private final SheetRepository sheetRepository;
     private final SheetPageRepository sheetPageRepository;
     private final StorageService storageService;
     private final UserContext userContext;
 
-    public void uploadPdf(UUID pieceId, MultipartFile file) {
+    public void uploadPdf(UUID workId, MultipartFile file) {
 
         UUID userId = userContext.getCurrentUserId();
 
-        Work piece = pieceRepository
-                .findByIdAndUser_Id(pieceId, userId)
-                .orElseThrow(() -> new AccessDeniedException("Not your piece"));
+        Work work = workRepository
+                .findByIdAndUser_Id(workId, userId)
+                .orElseThrow(() -> new AccessDeniedException("Not your work"));
 
         if (!"application/pdf".equals(file.getContentType())) {
             throw new IllegalArgumentException("Only PDF files are allowed");
         }
 
-        sheetRepository.deleteByPiece_Id(pieceId);
+        sheetRepository.deleteByWork_Id(workId);
 
-        String path = storageService.store(pieceId, file);
+        String path = storageService.store(workId, file);
 
         Sheet sheet = Sheet.builder()
-                .piece(piece)
+                .work(work)
                 .type(SheetType.PDF)
                 .pdfPath(path)
                 .pdfFilename(file.getOriginalFilename())
@@ -61,13 +61,13 @@ public class SheetService {
         sheetRepository.save(sheet);
     }
 
-    public void uploadImages(UUID pieceId, List<MultipartFile> files) {
+    public void uploadImages(UUID workId, List<MultipartFile> files) {
 
         UUID userId = userContext.getCurrentUserId();
 
-        Work piece = pieceRepository
-                .findByIdAndUser_Id(pieceId, userId)
-                .orElseThrow(() -> new AccessDeniedException("Not your piece"));
+        Work work = workRepository
+                .findByIdAndUser_Id(workId, userId)
+                .orElseThrow(() -> new AccessDeniedException("Not your work"));
 
         if (files.isEmpty()) {
             throw new IllegalArgumentException("No images uploaded");
@@ -79,17 +79,17 @@ public class SheetService {
             }
         }
 
-        sheetRepository.deleteByPiece_Id(pieceId);
+        sheetRepository.deleteByWork_Id(workId);
 
         Sheet sheet = Sheet.builder()
-                .piece(piece)
+                .work(work)
                 .type(SheetType.IMAGES)
                 .pages(new ArrayList<>())
                 .build();
 
         int order = 1;
         for (MultipartFile file : files) {
-            String path = storageService.store(pieceId, file);
+            String path = storageService.store(workId, file);
 
             SheetPage page = SheetPage.builder()
                     .sheet(sheet)
@@ -105,15 +105,15 @@ public class SheetService {
         sheetRepository.save(sheet);
     }
 
-    public Resource downloadPdf(UUID pieceId) {
+    public Resource downloadPdf(UUID workId) {
         UUID userId = userContext.getCurrentUserId();
 
         Sheet sheet = sheetRepository
-                .findByPiece_IdAndPiece_User_Id(pieceId, userId)
-                .orElseThrow(() -> new AccessDeniedException("Not your piece"));
+                .findByWork_IdAndWork_User_Id(workId, userId)
+                .orElseThrow(() -> new AccessDeniedException("Not your work"));
 
         if (sheet.getType() != SheetType.PDF) {
-            throw new IllegalStateException("Piece does not have a PDF sheet");
+            throw new IllegalStateException("Work does not have a PDF sheet");
         }
 
         return storageService.load(sheet.getPdfPath());
@@ -123,21 +123,21 @@ public class SheetService {
         UUID userId = userContext.getCurrentUserId();
 
         SheetPage page = sheetPageRepository
-                .findByIdAndSheet_Piece_User_Id(pageId, userId)
+                .findByIdAndSheet_Work_User_Id(pageId, userId)
                 .orElseThrow(() -> new AccessDeniedException("Not your page"));
 
         return storageService.load(page.getImagePath());
     }
 
-    public List<SheetPageResponseDto> listImagePages(UUID pieceId) {
+    public List<SheetPageResponseDto> listImagePages(UUID workId) {
         UUID userId = userContext.getCurrentUserId();
 
         Sheet sheet = sheetRepository
-                .findByPiece_IdAndPiece_User_Id(pieceId, userId)
-                .orElseThrow(() -> new AccessDeniedException("Not your piece"));
+                .findByWork_IdAndWork_User_Id(workId, userId)
+                .orElseThrow(() -> new AccessDeniedException("Not your work"));
 
         if (sheet.getType() != SheetType.IMAGES) {
-            throw new IllegalStateException("Piece does not have image sheets");
+            throw new IllegalStateException("Work does not have image sheets");
         }
 
         return sheetPageRepository

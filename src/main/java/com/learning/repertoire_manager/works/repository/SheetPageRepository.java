@@ -11,5 +11,5 @@ import java.util.UUID;
 public interface SheetPageRepository extends JpaRepository<SheetPage, UUID> {
     List<SheetPage> findBySheet_IdOrderByPageOrderAsc(UUID sheetId);
 
-    Optional<SheetPage> findByIdAndSheet_Piece_User_Id(UUID pageId, UUID userId);
+    Optional<SheetPage> findByIdAndSheet_Work_User_Id(UUID pageId, UUID userId);
 }

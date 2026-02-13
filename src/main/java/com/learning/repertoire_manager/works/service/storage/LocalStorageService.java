@@ -12,7 +12,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.learning.repertoire_manager.piece.service.storage.StorageService;
+import com.learning.repertoire_manager.work.service.storage.StorageService;
 
 @Service
 public class LocalStorageService implements StorageService {
@@ -20,12 +20,12 @@ public class LocalStorageService implements StorageService {
     private static final Path ROOT = Path.of("storage");
 
     @Override
-    public String store(UUID pieceId, MultipartFile file) {
+    public String store(UUID workId, MultipartFile file) {
         try {
-            Path pieceDir = ROOT.resolve(pieceId.toString());
-            Files.createDirectories(pieceDir);
+            Path workDir = ROOT.resolve(workId.toString());
+            Files.createDirectories(workDir);
 
-            Path target = pieceDir.resolve(file.getOriginalFilename());
+            Path target = workDir.resolve(file.getOriginalFilename());
 
             Files.copy(file.getInputStream(), target);
 

@@ -34,7 +34,7 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private List<Work> pieces;
+    private List<Work> works;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
