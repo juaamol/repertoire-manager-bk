@@ -1,6 +1,8 @@
-package com.learning.repertoire_manager.piece.model;
+package com.learning.repertoire_manager.works.model;
 
 import java.util.Arrays;
+
+import com.learning.repertoire_manager.works.model.Difficulty;
 
 public enum Difficulty {
     BEGINNER, INTERMEDIATE, ADVANCED;

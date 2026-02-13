@@ -7,7 +7,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-import com.learning.repertoire_manager.piece.model.Piece;
+import com.learning.repertoire_manager.works.model.Piece;
 
 @Entity
 @Table(name = "users")

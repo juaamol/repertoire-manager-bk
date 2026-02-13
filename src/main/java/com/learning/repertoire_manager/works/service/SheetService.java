@@ -1,16 +1,17 @@
-package com.learning.repertoire_manager.piece.service;
+package com.learning.repertoire_manager.works.service;
 
 import com.learning.repertoire_manager.exception.AccessDeniedException;
-import com.learning.repertoire_manager.piece.model.Sheet;
-import com.learning.repertoire_manager.piece.model.SheetPage;
-import com.learning.repertoire_manager.piece.model.SheetType;
-import com.learning.repertoire_manager.piece.dto.SheetPageResponseDto;
-import com.learning.repertoire_manager.piece.model.Piece;
-import com.learning.repertoire_manager.piece.repository.PieceRepository;
-import com.learning.repertoire_manager.piece.repository.SheetPageRepository;
-import com.learning.repertoire_manager.piece.repository.SheetRepository;
-import com.learning.repertoire_manager.piece.service.storage.StorageService;
 import com.learning.repertoire_manager.security.UserContext;
+import com.learning.repertoire_manager.works.dto.SheetPageResponseDto;
+import com.learning.repertoire_manager.works.model.Piece;
+import com.learning.repertoire_manager.works.model.Sheet;
+import com.learning.repertoire_manager.works.model.SheetPage;
+import com.learning.repertoire_manager.works.model.SheetType;
+import com.learning.repertoire_manager.works.repository.PieceRepository;
+import com.learning.repertoire_manager.works.repository.SheetPageRepository;
+import com.learning.repertoire_manager.works.repository.SheetRepository;
+import com.learning.repertoire_manager.works.service.storage.StorageService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

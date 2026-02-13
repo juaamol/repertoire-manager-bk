@@ -1,4 +1,4 @@
-package com.learning.repertoire_manager.piece.model;
+package com.learning.repertoire_manager.works.model;
 
 import jakarta.persistence.*;
 import lombok.*;

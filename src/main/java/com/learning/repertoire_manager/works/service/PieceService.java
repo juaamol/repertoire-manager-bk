@@ -1,12 +1,16 @@
-package com.learning.repertoire_manager.piece.service;
+package com.learning.repertoire_manager.works.service;
 
 import com.learning.repertoire_manager.exception.ResourceNotFoundException;
-import com.learning.repertoire_manager.piece.dto.*;
-import com.learning.repertoire_manager.piece.model.*;
-import com.learning.repertoire_manager.piece.repository.PieceRepository;
-import com.learning.repertoire_manager.piece.repository.TechniqueRepository;
+import com.learning.repertoire_manager.works.dto.PieceCreateRequestDto;
+import com.learning.repertoire_manager.works.dto.PieceResponseDto;
+import com.learning.repertoire_manager.works.dto.PieceUpdateRequestDto;
+import com.learning.repertoire_manager.works.dto.SheetPageResponseDto;
+import com.learning.repertoire_manager.works.dto.SheetResponseDto;
 import com.learning.repertoire_manager.security.UserContext;
 import com.learning.repertoire_manager.user.model.User;
+import com.learning.repertoire_manager.works.model.*;
+import com.learning.repertoire_manager.works.repository.PieceRepository;
+import com.learning.repertoire_manager.works.repository.TechniqueRepository;
 
 import lombok.RequiredArgsConstructor;
 

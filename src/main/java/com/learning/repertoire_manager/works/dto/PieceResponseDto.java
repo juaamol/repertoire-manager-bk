@@ -1,8 +1,7 @@
-package com.learning.repertoire_manager.piece.dto;
+package com.learning.repertoire_manager.works.dto;
 
 import java.util.List;
 import java.util.UUID;
-
 
 public record PieceResponseDto(
         UUID id,

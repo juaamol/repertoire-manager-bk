@@ -1,4 +1,4 @@
-package com.learning.repertoire_manager.piece.service.storage;
+package com.learning.repertoire_manager.works.service.storage;
 
 import java.util.UUID;
 import org.springframework.web.multipart.MultipartFile;

@@ -1,7 +1,8 @@
-package com.learning.repertoire_manager.piece.repository;
+package com.learning.repertoire_manager.works.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.learning.repertoire_manager.piece.model.SheetPage;
+
+import com.learning.repertoire_manager.works.model.SheetPage;
 
 import java.util.List;
 import java.util.Optional;

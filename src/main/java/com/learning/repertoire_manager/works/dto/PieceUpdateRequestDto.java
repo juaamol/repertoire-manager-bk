@@ -1,4 +1,4 @@
-package com.learning.repertoire_manager.piece.dto;
+package com.learning.repertoire_manager.works.dto;
 
 import lombok.Data;
 

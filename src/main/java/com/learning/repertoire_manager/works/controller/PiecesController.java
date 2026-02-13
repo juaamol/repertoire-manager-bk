@@ -1,9 +1,4 @@
-package com.learning.repertoire_manager.piece.controller;
-
-import com.learning.repertoire_manager.piece.dto.PieceCreateRequestDto;
-import com.learning.repertoire_manager.piece.dto.PieceResponseDto;
-import com.learning.repertoire_manager.piece.dto.PieceUpdateRequestDto;
-import com.learning.repertoire_manager.piece.service.PieceService;
+package com.learning.repertoire_manager.works.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +6,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import com.learning.repertoire_manager.works.dto.PieceCreateRequestDto;
+import com.learning.repertoire_manager.works.dto.PieceResponseDto;
+import com.learning.repertoire_manager.works.dto.PieceUpdateRequestDto;
+import com.learning.repertoire_manager.works.service.PieceService;
 
 import java.util.List;
 import java.util.UUID;

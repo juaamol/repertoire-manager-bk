@@ -1,4 +1,4 @@
-package com.learning.repertoire_manager.piece.service.storage;
+package com.learning.repertoire_manager.works.service.storage;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,6 +11,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.learning.repertoire_manager.piece.service.storage.StorageService;
 
 @Service
 public class LocalStorageService implements StorageService {

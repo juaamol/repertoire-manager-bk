@@ -1,7 +1,8 @@
-package com.learning.repertoire_manager.piece.repository;
+package com.learning.repertoire_manager.works.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.learning.repertoire_manager.piece.model.Sheet;
+
+import com.learning.repertoire_manager.works.model.Sheet;
 
 import java.util.Optional;
 import java.util.UUID;

@@ -1,10 +1,12 @@
-package com.learning.repertoire_manager.piece.model;
+package com.learning.repertoire_manager.works.model;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
 import java.util.UUID;
+
+import com.learning.repertoire_manager.piece.model.Piece;
 
 
 @Entity
