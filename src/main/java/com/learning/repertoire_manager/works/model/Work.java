@@ -16,7 +16,7 @@ import com.learning.repertoire_manager.user.model.User;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Piece {
+public class Work {
     @Id
     @GeneratedValue
     private UUID id;

@@ -3,11 +3,11 @@ package com.learning.repertoire_manager.works.service;
 import com.learning.repertoire_manager.exception.AccessDeniedException;
 import com.learning.repertoire_manager.security.UserContext;
 import com.learning.repertoire_manager.works.dto.SheetPageResponseDto;
-import com.learning.repertoire_manager.works.model.Piece;
+import com.learning.repertoire_manager.works.model.Work;
 import com.learning.repertoire_manager.works.model.Sheet;
 import com.learning.repertoire_manager.works.model.SheetPage;
 import com.learning.repertoire_manager.works.model.SheetType;
-import com.learning.repertoire_manager.works.repository.PieceRepository;
+import com.learning.repertoire_manager.works.repository.WorkRepository;
 import com.learning.repertoire_manager.works.repository.SheetPageRepository;
 import com.learning.repertoire_manager.works.repository.SheetRepository;
 import com.learning.repertoire_manager.works.service.storage.StorageService;
@@ -27,7 +27,7 @@ import java.util.UUID;
 @Transactional
 public class SheetService {
 
-    private final PieceRepository pieceRepository;
+    private final WorkRepository pieceRepository;
     private final SheetRepository sheetRepository;
     private final SheetPageRepository sheetPageRepository;
     private final StorageService storageService;
@@ -37,7 +37,7 @@ public class SheetService {
 
         UUID userId = userContext.getCurrentUserId();
 
-        Piece piece = pieceRepository
+        Work piece = pieceRepository
                 .findByIdAndUser_Id(pieceId, userId)
                 .orElseThrow(() -> new AccessDeniedException("Not your piece"));
 
@@ -65,7 +65,7 @@ public class SheetService {
 
         UUID userId = userContext.getCurrentUserId();
 
-        Piece piece = pieceRepository
+        Work piece = pieceRepository
                 .findByIdAndUser_Id(pieceId, userId)
                 .orElseThrow(() -> new AccessDeniedException("Not your piece"));
 

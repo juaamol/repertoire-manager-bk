@@ -7,7 +7,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-import com.learning.repertoire_manager.works.model.Piece;
+import com.learning.repertoire_manager.works.model.Work;
 
 @Entity
 @Table(name = "users")
@@ -34,7 +34,7 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private List<Piece> pieces;
+    private List<Work> pieces;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

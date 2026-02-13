@@ -22,7 +22,7 @@ public class Sheet {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "piece_id", nullable = false, unique = true)
-    private Piece piece;
+    private Work piece;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

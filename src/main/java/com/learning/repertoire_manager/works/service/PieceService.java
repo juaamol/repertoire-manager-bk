@@ -9,7 +9,7 @@ import com.learning.repertoire_manager.works.dto.SheetResponseDto;
 import com.learning.repertoire_manager.security.UserContext;
 import com.learning.repertoire_manager.user.model.User;
 import com.learning.repertoire_manager.works.model.*;
-import com.learning.repertoire_manager.works.repository.PieceRepository;
+import com.learning.repertoire_manager.works.repository.WorkRepository;
 import com.learning.repertoire_manager.works.repository.TechniqueRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class PieceService {
-        private final PieceRepository pieceRepository;
+        private final WorkRepository pieceRepository;
         private final UserContext userContext;
         private final TechniqueRepository techniqueRepository;
 
@@ -37,7 +37,7 @@ public class PieceService {
                                                                 Technique.builder().name(name).build())))
                                 .toList();
 
-                Piece piece = Piece.builder()
+                Work piece = Work.builder()
                                 .user(User.builder().id(userId).build())
                                 .title(request.getTitle())
                                 .composer(request.getComposer())
@@ -52,7 +52,7 @@ public class PieceService {
         @Transactional
         public PieceResponseDto getPieceById(UUID pieceId) {
                 UUID userId = userContext.getCurrentUserId();
-                Piece piece = pieceRepository
+                Work piece = pieceRepository
                                 .findByIdAndUser_Id(pieceId, userId)
                                 .orElseThrow(() -> new ResourceNotFoundException("Piece not found"));
 
@@ -76,7 +76,7 @@ public class PieceService {
         public PieceResponseDto updatePiece(UUID pieceId, PieceUpdateRequestDto request) {
                 UUID userId = userContext.getCurrentUserId();
 
-                Piece piece = pieceRepository
+                Work piece = pieceRepository
                                 .findByIdAndUser_Id(pieceId, userId)
                                 .orElseThrow(() -> new ResourceNotFoundException("Piece not found"));
 
@@ -101,7 +101,7 @@ public class PieceService {
         @Transactional
         public PieceResponseDto addTechniqueToPiece(UUID pieceId, String techniqueName) {
                 UUID userId = userContext.getCurrentUserId();
-                Piece piece = pieceRepository
+                Work piece = pieceRepository
                                 .findByIdAndUser_Id(pieceId, userId)
                                 .orElseThrow(() -> new ResourceNotFoundException("Piece not found"));
 
@@ -115,7 +115,7 @@ public class PieceService {
         @Transactional
         public PieceResponseDto removeTechniqueFromPiece(UUID pieceId, UUID techniqueId) {
                 UUID userId = userContext.getCurrentUserId();
-                Piece piece = pieceRepository
+                Work piece = pieceRepository
                                 .findByIdAndUser_Id(pieceId, userId)
                                 .orElseThrow(() -> new ResourceNotFoundException("Piece not found"));
 
@@ -126,7 +126,7 @@ public class PieceService {
                 return toDto(pieceRepository.save(piece));
         }
 
-        private PieceResponseDto toDto(Piece piece) {
+        private PieceResponseDto toDto(Work piece) {
                 SheetResponseDto sheetDto = null;
 
                 if (piece.getSheet() != null) {
