@@ -2,15 +2,23 @@
 -- SHARED LOOKUP TABLES
 -- ==========================================
 
--- Master list of instrument names (e.g., "Piano", "Violin", "Symphony Orchestra")
+-- Categories (Families) to group instruments and techniques
+CREATE TABLE IF NOT EXISTS categories (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(100) NOT NULL UNIQUE -- 'Strings', 'Woodwinds', 'Vocal', 'General', etc.
+);
+
+-- Master list of instrument names linked to a category
 CREATE TABLE IF NOT EXISTS instrumentation (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    category_id UUID REFERENCES categories(id) ON DELETE SET NULL,
     name VARCHAR(255) NOT NULL UNIQUE
 );
 
--- Master list of techniques
+-- Master list of techniques linked to a category
 CREATE TABLE IF NOT EXISTS techniques (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    category_id UUID REFERENCES categories(id) ON DELETE SET NULL,
     name VARCHAR(255) NOT NULL UNIQUE
 );
 
