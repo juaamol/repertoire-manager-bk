@@ -54,6 +54,14 @@ public class UserWorkService {
         }
 
         @Transactional(readOnly = true)
+        public WorkResponseDto getWorkById(UUID workId) {
+                UUID userId = userContext.getCurrentUserId();
+                UserWork work = userWorkRepository.findByIdAndUserId(workId, userId)
+                                .orElseThrow(() -> new ResourceNotFoundException("Work not found"));
+                return workMapper.toDto(work);
+        }
+
+        @Transactional(readOnly = true)
         public Page<WorkResponseDto> getWorksWithFilters(
                         String composer,
                         String technique,
@@ -75,7 +83,7 @@ public class UserWorkService {
         public WorkResponseDto updateWork(UUID workId, WorkUpdateRequestDto request) {
                 UUID userId = userContext.getCurrentUserId();
                 UserWork work = userWorkRepository.findByIdAndUserId(workId, userId)
-                                .orElseThrow(() -> new ResourceNotFoundException("Work not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Work not found"));
 
                 work.setSubtitle(request.getSubtitle());
                 work.setNotes(request.getNotes());
@@ -94,13 +102,6 @@ public class UserWorkService {
                 return workMapper.toDto(userWorkRepository.save(work));
         }
 
-        @Transactional(readOnly = true)
-        public WorkResponseDto getWorkById(UUID workId) {
-                UUID userId = userContext.getCurrentUserId();
-                UserWork work = userWorkRepository.findByIdAndUserId(workId, userId)
-                                .orElseThrow(() -> new ResourceNotFoundException("Work not found"));
-                return workMapper.toDto(work);
-        }
 
         @Transactional
         public void deleteWork(UUID workId) {
@@ -146,7 +147,5 @@ public class UserWorkService {
 
                 work.setUserComposer(composer);
                 work.setCatalogComposer(null);
-        }
-
-        
+        }  
 }

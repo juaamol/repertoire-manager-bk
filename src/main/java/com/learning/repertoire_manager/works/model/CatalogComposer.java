@@ -13,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CatalogComposer {
+public class CatalogComposer implements Composer {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;

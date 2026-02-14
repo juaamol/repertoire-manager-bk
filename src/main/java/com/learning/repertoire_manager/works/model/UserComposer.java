@@ -15,7 +15,7 @@ import com.learning.repertoire_manager.user.model.User;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserComposer {
+public class UserComposer implements Composer {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
