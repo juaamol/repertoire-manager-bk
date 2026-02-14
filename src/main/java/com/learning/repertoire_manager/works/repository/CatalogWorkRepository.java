@@ -24,7 +24,7 @@ public interface CatalogWorkRepository extends JpaRepository<CatalogWork, UUID> 
           LEFT JOIN workInstRelation.instrumentation instrument
           WHERE (
               :composerName IS NULL OR
-              LOWER(composer.name) LIKE LOWER(CONCAT('%', :composerName, '%'))
+              LOWER(composer.name) LIKE LOWER(CONCAT('%', CAST(:composerName AS string), '%'))
             )
             AND (:instrumentName IS NULL OR instrument.name = :instrumentName)
       """)
