@@ -20,11 +20,10 @@ public class CatalogWorksController {
     @GetMapping
     public Page<CatalogWorkResponseDto> getWorks(
             @RequestParam(required = false) String composer,
-            @RequestParam(required = false) String technique,
             @RequestParam(required = false) String instrument,
             @PageableDefault(size = 20) Pageable pageable) {
 
-        return workService.getWorksWithFilters(composer, technique, instrument, pageable);
+        return workService.getWorksWithFilters(composer, instrument, pageable);
     }
 
     @GetMapping("/{id}")

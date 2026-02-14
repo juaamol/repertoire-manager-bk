@@ -29,10 +29,9 @@ public class CatalogWorkService {
         @Transactional(readOnly = true)
         public Page<CatalogWorkResponseDto> getWorksWithFilters(
                         String composer,
-                        String technique,
                         String instrument,
                         Pageable pageable) {
 
-                return workRepository.findByFilters(composer, technique, instrument, pageable).map(workMapper::toDto);
+                return workRepository.findByFilters(composer, instrument, pageable).map(workMapper::toDto);
         }
 }

@@ -19,20 +19,17 @@ public interface CatalogWorkRepository extends JpaRepository<CatalogWork, UUID> 
   @Query("""
           SELECT DISTINCT work
           FROM CatalogWork work
-          LEFT JOIN work.catalogComposer catComposer
-          LEFT JOIN work.techniques technique
+          LEFT JOIN work.composer composer
           LEFT JOIN work.instrumentations workInstRelation
           LEFT JOIN workInstRelation.instrumentation instrument
           WHERE (
               :composerName IS NULL OR
-              LOWER(catComposer.name) LIKE LOWER(CONCAT('%', :composerName, '%'))
+              LOWER(composer.name) LIKE LOWER(CONCAT('%', :composerName, '%'))
             )
-            AND (:techniqueName IS NULL OR technique.name = :techniqueName)
             AND (:instrumentName IS NULL OR instrument.name = :instrumentName)
       """)
   Page<CatalogWork> findByFilters(
       @Param("composerName") String composerName,
-      @Param("techniqueName") String techniqueName,
       @Param("instrumentName") String instrumentName,
       Pageable pageable);
 }
