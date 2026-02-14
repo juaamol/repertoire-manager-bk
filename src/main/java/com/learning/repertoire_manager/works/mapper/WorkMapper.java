@@ -2,6 +2,9 @@ package com.learning.repertoire_manager.works.mapper;
 
 import com.learning.repertoire_manager.works.dto.*;
 import com.learning.repertoire_manager.works.model.*;
+
+import java.util.UUID;
+
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,7 +22,23 @@ public class WorkMapper {
                 .difficulty(work.getDifficulty().toString())
                 .status(work.getStatus().toString())
                 .notes(work.getNotes())
-                .techniques(work.getTechniques().stream().map(Technique::getName).toList())
+                .instrumentation(work.getInstrumentations().stream()
+                        .map(i -> {
+                            Instrumentation instrumentation = i.getInstrumentation();
+                            String name = instrumentation.getName();
+                            UUID id = instrumentation.getId();
+                            
+                            return InstrumentationResponseDto.builder().name(name).id(id).build();
+                        })
+                        .toList())
+                .techniques(work.getTechniques().stream()
+                        .map(technique -> {
+                            String name = technique.getName();
+                            UUID id = technique.getId();
+                            
+                            return TechniqueResponseDto.builder().name(name).id(id).build();
+                        })
+                        .toList())
                 .build();
     }
 

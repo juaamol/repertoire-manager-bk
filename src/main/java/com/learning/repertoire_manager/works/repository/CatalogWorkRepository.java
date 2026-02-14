@@ -14,7 +14,7 @@ import java.util.UUID;
 @Repository
 public interface CatalogWorkRepository extends JpaRepository<CatalogWork, UUID> {
 
-  Optional<CatalogWork> findByIdAndUserId(UUID workId, UUID userId);
+  Optional<CatalogWork> findById(UUID workId, UUID userId);
 
   @Query("""
           SELECT DISTINCT work

@@ -16,6 +16,7 @@ public class WorkResponseDto {
     String difficulty;
     String status;
     String notes;
-    List<String> techniques;
+    List<InstrumentationResponseDto> instrumentation;
+    List<TechniqueResponseDto> techniques;
     SheetResponseDto sheet;
 }
