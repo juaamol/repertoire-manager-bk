@@ -26,6 +26,15 @@ public class CatalogWorksController {
         return workService.getWorksWithFilters(composer, instrument, pageable);
     }
 
+    @GetMapping("/search")
+    public Page<CatalogWorkResponseDto> searchWorks(
+            @RequestParam(required = false) String composer,
+            @RequestParam(required = false) String titleSubtitle,
+            @PageableDefault(size = 20) Pageable pageable) {
+
+        return workService.search(composer, titleSubtitle, pageable);
+    }   
+
     @GetMapping("/{id}")
     public CatalogWorkResponseDto getWorkById(@PathVariable UUID id) {
         return workService.getWorkById(id);

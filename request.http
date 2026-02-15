@@ -44,6 +44,11 @@ GET http://localhost:8080/api/catalog-works/{{getWorksByInstrument.response.body
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
+### Get catalog work by title and composer name ###
+GET http://localhost:8080/api/catalog-works/search?composer=Bach&titleSubtitle=Aria
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
 ### ---------- Catalog Composers ----------- ###
 ### Retrieve catalog composers ###
 GET http://localhost:8080/api/catalog-composers

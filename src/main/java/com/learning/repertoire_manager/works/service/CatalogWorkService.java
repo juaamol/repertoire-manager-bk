@@ -34,4 +34,9 @@ public class CatalogWorkService {
 
                 return workRepository.findByFilters(composer, instrument, pageable).map(workMapper::toDto);
         }
+
+        @Transactional(readOnly = true)
+        public Page<CatalogWorkResponseDto> search(String composer, String titleSubtitle, Pageable pageable) {
+                return workRepository.search(composer, titleSubtitle, pageable).map(workMapper::toDto);
+        }
 }

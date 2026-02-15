@@ -32,4 +32,10 @@ public interface CatalogWorkRepository extends JpaRepository<CatalogWork, UUID> 
       @Param("composerName") String composerName,
       @Param("instrumentName") String instrumentName,
       Pageable pageable);
+
+  @Query(value = "SELECT * FROM search_catalog_works(:comp, :title)", countQuery = "SELECT count(*) FROM search_catalog_works(:comp, :title)", nativeQuery = true)
+  Page<CatalogWork> search(
+      @Param("comp") String composer,
+      @Param("title") String titleSubtitle,
+      Pageable pageable);
 }
