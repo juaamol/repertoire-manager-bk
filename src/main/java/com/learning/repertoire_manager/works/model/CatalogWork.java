@@ -1,5 +1,6 @@
 package com.learning.repertoire_manager.works.model;
 
+import org.hibernate.annotations.Immutable;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -8,6 +9,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "catalog_works")
+@Immutable
 @Getter
 @Setter
 @NoArgsConstructor

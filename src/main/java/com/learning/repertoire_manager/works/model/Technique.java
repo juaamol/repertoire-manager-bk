@@ -5,8 +5,12 @@ import lombok.*;
 
 import java.util.UUID;
 
+import org.hibernate.annotations.Immutable;
+
+
 @Entity
 @Table(name = "techniques")
+@Immutable
 @Getter
 @Setter
 @NoArgsConstructor

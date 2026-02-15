@@ -6,8 +6,11 @@ import lombok.*;
 import java.time.LocalDate;
 import java.util.UUID;
 
+import org.hibernate.annotations.Immutable;
+
 @Entity
 @Table(name = "catalog_composers")
+@Immutable
 @Getter
 @Setter
 @NoArgsConstructor

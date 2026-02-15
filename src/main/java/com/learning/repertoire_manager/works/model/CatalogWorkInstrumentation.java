@@ -6,8 +6,11 @@ import lombok.*;
 import java.io.Serializable;
 import java.util.UUID;
 
+import org.hibernate.annotations.Immutable;
+
 @Entity
 @Table(name = "catalog_work_instrumentation")
+@Immutable
 @Getter
 @Setter
 @NoArgsConstructor
