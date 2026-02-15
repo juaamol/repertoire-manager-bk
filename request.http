@@ -90,10 +90,9 @@ Authorization: Bearer {{token}}
 }   
 
 
-
 ### Get user works ###
 # @name getUserWorks
-GET http://localhost:8080/api/works?difficulty=BEGINNER&status=LEARNING
+GET http://localhost:8080/api/works
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -104,5 +103,22 @@ Authorization: Bearer {{token}}
 
 ### Get user work by ID ###
 GET http://localhost:8080/api/works/{{getUserWorks.response.body.content[0].id}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### Update user work by ID ###
+PUT http://localhost:8080/api/works/{{getUserWorks.response.body.content[0].id}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "title": "Updated title",
+    "subtitle": "Updated subtitle",
+    "notes": "Updated notes for this piece",
+    "status": "READY"
+}
+
+### Delete user work by ID ###
+DELETE http://localhost:8080/api/works/{{getUserWorks.response.body.content[0].id}}
 Content-Type: application/json
 Authorization: Bearer {{token}}

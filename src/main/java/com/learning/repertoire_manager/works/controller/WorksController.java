@@ -14,7 +14,6 @@ import com.learning.repertoire_manager.works.dto.WorkCreateRequestDto;
 import com.learning.repertoire_manager.works.dto.WorkResponseDto;
 import com.learning.repertoire_manager.works.dto.WorkUpdateRequestDto;
 import com.learning.repertoire_manager.works.service.UserWorkService;
-import com.learning.repertoire_manager.works.service.UserWorkTechniqueService;
 
 import java.util.UUID;
 
@@ -23,7 +22,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class WorksController {
     private final UserWorkService workService;
-     private final UserWorkTechniqueService techniqueService;
 
     @GetMapping
     public Page<WorkResponseDto> getWorks(
@@ -60,19 +58,4 @@ public class WorksController {
     public void deleteWork(@PathVariable UUID id) {
         workService.deleteWork(id);
     }
-
-    @PostMapping("/{id}/techniques")
-    public WorkResponseDto addTechnique(
-            @PathVariable UUID id,
-            @RequestParam UUID techniqueId) {
-        return techniqueService.addTechniqueToWork(id, techniqueId);
-    }
-
-    @DeleteMapping("/{id}/techniques/{techniqueId}")
-    public WorkResponseDto removeTechnique(
-            @PathVariable UUID id,
-            @PathVariable UUID techniqueId) {
-        return techniqueService.removeTechniqueFromWork(id, techniqueId);
-    }
-
 }
