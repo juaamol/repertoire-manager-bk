@@ -20,4 +20,5 @@ public class WorkUpdateRequestDto {
     private String difficulty;
     private String status;
     private List<UUID> techniqueIds;
+    private List<InstrumentationRequestDto> instrumentation;
 }

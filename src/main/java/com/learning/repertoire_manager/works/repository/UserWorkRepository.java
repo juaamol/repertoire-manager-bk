@@ -31,8 +31,8 @@ public interface UserWorkRepository extends JpaRepository<UserWork, UUID> {
           WHERE work.user.id = :userId
             AND (
               :composerName IS NULL OR
-              LOWER(catComposer.name) LIKE LOWER(CONCAT('%', :composerName, '%')) OR
-              LOWER(customComposer.name) LIKE LOWER(CONCAT('%', :composerName, '%'))
+              LOWER(catComposer.name) LIKE LOWER(CONCAT('%', CAST(:composerName AS string), '%')) OR
+              LOWER(customComposer.name) LIKE LOWER(CONCAT('%', CAST(:composerName AS string), '%'))
             )
             AND (:techniqueName IS NULL OR technique.name = :techniqueName)
             AND (:instrumentName IS NULL OR instrument.name = :instrumentName)

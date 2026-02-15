@@ -26,6 +26,6 @@ public class CatalogWork {
     private String title;
     private String subtitle;
 
-    @OneToMany(mappedBy = "work")
+    @OneToMany(mappedBy = "work", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CatalogWorkInstrumentation> instrumentations;
 }

@@ -31,11 +31,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
-            FilterChain filterChain
-    ) throws ServletException, IOException {
+            FilterChain filterChain) throws ServletException, IOException {
 
         String authHeader = request.getHeader("Authorization");
-        final String BEARER_PREFIX = "Bearer "; 
+        final String BEARER_PREFIX = "Bearer ";
 
         if (authHeader == null || !authHeader.startsWith(BEARER_PREFIX)) {
             filterChain.doFilter(request, response);
@@ -43,28 +42,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String token = authHeader.substring(BEARER_PREFIX.length());
-        System.out.println("Token valid for user: " + token);
 
         try {
             Jws<Claims> claims = jwtService.validateToken(token);
             UUID userId = UUID.fromString(claims.getBody().getSubject());
             String role = claims.getBody().get("role", String.class);
 
-            List<GrantedAuthority> authorities =
-            List.of(new SimpleGrantedAuthority("ROLE_" + role));
+            List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
 
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(
-                            userId,
-                            null,
-                            authorities
-                    );
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                    userId,
+                    null,
+                    authorities);
 
             authentication.setDetails(
-                    new WebAuthenticationDetailsSource().buildDetails(request)
-            );
+                    new WebAuthenticationDetailsSource().buildDetails(request));
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            System.out.println("Token valid for user: " + token);
 
         } catch (Exception e) {
             // Invalid token

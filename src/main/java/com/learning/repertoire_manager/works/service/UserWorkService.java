@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,6 +24,7 @@ public class UserWorkService {
         private final CatalogComposerRepository catalogComposerRepository;
         private final UserComposerRepository userComposerRepository;
         private final TechniqueRepository techniqueRepository;
+        private final InstrumentationRepository instrumentationRepository;
         private final UserContext userContext;
         private final WorkMapper workMapper;
 
@@ -37,6 +39,7 @@ public class UserWorkService {
                                 .notes(request.getNotes())
                                 .difficulty(Difficulty.fromString(request.getDifficulty()))
                                 .status(Status.fromString(request.getStatus()))
+                                .instrumentations(new ArrayList<>())
                                 .build();
 
                 if (request.getComposerId() != null) {
@@ -47,8 +50,49 @@ public class UserWorkService {
                         throw new IllegalArgumentException("You must provide either a Composer ID or a Composer Name.");
                 }
 
+                work.setTechniques(findTechniquesByIds(request.getTechniqueIds()));
+
+                if (request.getInstrumentation() != null) {
+                        List<UserWorkInstrumentation> links = buildInstrumentationFromDtos(work,
+                                        request.getInstrumentation());
+                        work.setInstrumentations(links);
+                }
+
+                return workMapper.toDto(userWorkRepository.save(work));
+        }
+
+        @Transactional
+        public WorkResponseDto updateWork(UUID workId, WorkUpdateRequestDto request) {
+                UUID userId = userContext.getCurrentUserId();
+                UserWork work = userWorkRepository.findByIdAndUserId(workId, userId)
+                                .orElseThrow(() -> new ResourceNotFoundException("Work not found"));
+
+                if (request.getTitle() != null)
+                        work.setTitle(request.getTitle());
+
+                if (request.getSubtitle() != null)
+                        work.setSubtitle(request.getSubtitle());
+
+                if (request.getNotes() != null)
+                        work.setNotes(request.getNotes());
+
+                if (request.getDifficulty() != null)
+                        work.setDifficulty(Difficulty.fromString(request.getDifficulty()));
+
+                if (request.getStatus() != null)
+                        work.setStatus(Status.fromString(request.getStatus()));
+
+                if (request.getComposerId() != null)
+                        linkExistingComposer(work, request.getComposerId(), userId);
+
                 if (request.getTechniqueIds() != null)
                         work.setTechniques(findTechniquesByIds(request.getTechniqueIds()));
+
+                if (request.getInstrumentation() != null && !request.getInstrumentation().isEmpty()) {
+                        work.getInstrumentations().clear();
+                        work.getInstrumentations()
+                                        .addAll(buildInstrumentationFromDtos(work, request.getInstrumentation()));
+                }
 
                 return workMapper.toDto(userWorkRepository.save(work));
         }
@@ -62,17 +106,11 @@ public class UserWorkService {
         }
 
         @Transactional(readOnly = true)
-        public Page<WorkResponseDto> getWorksWithFilters(
-                        String composer,
-                        String technique,
-                        String instrument,
-                        String difficulty,
-                        String status,
-                        Pageable pageable) {
-
+        public Page<WorkResponseDto> getWorksWithFilters(String composer, String technique, String instrument,
+                        String difficulty, String status, Pageable pageable) {
                 UUID userId = userContext.getCurrentUserId();
-                Difficulty eDifficulty = Difficulty.fromString(difficulty);
-                Status eStatus = Status.fromString(status);
+                Difficulty eDifficulty = (difficulty != null) ? Difficulty.fromString(difficulty) : null;
+                Status eStatus = (status != null) ? Status.fromString(status) : null;
 
                 return userWorkRepository
                                 .findByFilters(userId, composer, technique, instrument, eDifficulty, eStatus, pageable)
@@ -80,33 +118,31 @@ public class UserWorkService {
         }
 
         @Transactional
-        public WorkResponseDto updateWork(UUID workId, WorkUpdateRequestDto request) {
-                UUID userId = userContext.getCurrentUserId();
-                UserWork work = userWorkRepository.findByIdAndUserId(workId, userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Work not found"));
-
-                work.setSubtitle(request.getSubtitle());
-                work.setNotes(request.getNotes());
-
-                if (request.getTitle() != null)
-                        work.setTitle(request.getTitle());
-                if (request.getDifficulty() != null)
-                        work.setDifficulty(Difficulty.fromString(request.getDifficulty()));
-                if (request.getStatus() != null)
-                        work.setStatus(Status.fromString(request.getStatus()));
-                if (request.getComposerId() != null)
-                        linkExistingComposer(work, request.getComposerId(), userId);
-                if (request.getTechniqueIds() != null)
-                        work.getTechniques().addAll(findTechniquesByIds(request.getTechniqueIds()));
-
-                return workMapper.toDto(userWorkRepository.save(work));
-        }
-
-
-        @Transactional
         public void deleteWork(UUID workId) {
                 UUID userId = userContext.getCurrentUserId();
                 userWorkRepository.deleteByIdAndUserId(workId, userId);
+        }
+
+        private List<UserWorkInstrumentation> buildInstrumentationFromDtos(UserWork work,
+                        List<InstrumentationRequestDto> dtos) {
+                return dtos.stream().map(dto -> {
+                        String rank = (dto.getRank() != null) ? dto.getRank() : "";
+
+                        Instrumentation instrumentation = instrumentationRepository.findById(dto.getId())
+                                        .orElseThrow(() -> new ResourceNotFoundException(
+                                                        "Instrumentation not found: " + dto.getId()));
+
+                        UserWorkInstrumentationId workInstrumentationId = new UserWorkInstrumentationId(work.getId(),
+                                        instrumentation.getId(),
+                                        rank);
+
+                        return UserWorkInstrumentation.builder()
+                                        .id(workInstrumentationId)
+                                        .work(work)
+                                        .instrumentation(instrumentation)
+                                        .quantity(dto.getQuantity() != null ? dto.getQuantity() : 1)
+                                        .build();
+                }).toList();
         }
 
         private List<Technique> findTechniquesByIds(List<UUID> ids) {
@@ -128,8 +164,7 @@ public class UserWorkService {
 
                 var userComposer = userComposerRepository.findById(composerId)
                                 .filter(composer -> composer.getUser().getId().equals(userId))
-                                .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Composer ID not found in catalog or your personal list."));
+                                .orElseThrow(() -> new ResourceNotFoundException("Composer ID not found."));
 
                 work.setUserComposer(userComposer);
                 work.setCatalogComposer(null);
@@ -137,15 +172,11 @@ public class UserWorkService {
 
         private void findOrCreateUserComposer(UserWork work, String composerName, UUID userId) {
                 UserComposer composer = userComposerRepository.findByNameAndUserId(composerName, userId)
-                                .orElseGet(() -> {
-                                        UserComposer newComposer = UserComposer.builder()
-                                                        .user(User.builder().id(userId).build())
-                                                        .name(composerName)
-                                                        .build();
-                                        return userComposerRepository.save(newComposer);
-                                });
-
+                                .orElseGet(() -> userComposerRepository.save(UserComposer.builder()
+                                                .user(User.builder().id(userId).build())
+                                                .name(composerName)
+                                                .build()));
                 work.setUserComposer(composer);
                 work.setCatalogComposer(null);
-        }  
+        }
 }

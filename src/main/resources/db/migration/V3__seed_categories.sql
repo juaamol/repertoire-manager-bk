@@ -8,5 +8,7 @@ INSERT INTO categories (name) VALUES
 ('Percussion'),
 ('Electronic'),
 ('Ensemble'),
+('Mechanical'),
+('Traditional'),
 ('Other')
 ON CONFLICT (name) DO NOTHING;

@@ -1,0 +1,108 @@
+### ---------- User Authentication ----------- ###
+### Register ###
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+    "email": "user1@example.com",
+    "password": "user1_password"
+}
+
+### Login ###
+# @name postLogin
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+    "email": "user1@example.com",
+    "password": "user1_password"
+}
+
+### Token
+@token = {{ postLogin.response.body.token }}
+
+
+### ---------- Catalog retrieval ----------- ###
+### Retrieve catalog works ###
+GET http://localhost:8080/api/catalog-works 
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### Retrieve catalog works by composer ###
+GET http://localhost:8080/api/catalog-works?composer=Vivaldi
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### Retrieve catalog works by instrument ###
+# @name getWorksByInstrument
+GET http://localhost:8080/api/catalog-works?instrument=Violin
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### Get catalog work by ID ###
+GET http://localhost:8080/api/catalog-works/{{getWorksByInstrument.response.body.content[0].id}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### ---------- User Works ----------- ###
+### Create user work from catalog work  with composerId ###
+POST http://localhost:8080/api/works
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "title": "{{getWorksByInstrument.response.body.content[0].title}}",
+    "subtitle": "{{getWorksByInstrument.response.body.content[0].subtitle}}",
+    "notes": "Excited to learn this piece!",
+    "composerId": "{{getWorksByInstrument.response.body.content[0].composer.id}}",
+    "difficulty": "BEGINNER",
+    "status": "LEARNING",
+    "techniqueIds": [],
+    "instrumentation": [
+        {
+            "id": "{{getWorksByInstrument.response.body.content[0].instrumentation[0].id}}",
+            "rank": null,
+            "quantity": 3
+        }
+    ]
+}   
+
+### Create user work from catalog work with composerName ###
+POST http://localhost:8080/api/works
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "title": "{{getWorksByInstrument.response.body.content[0].title}}",
+    "subtitle": "{{getWorksByInstrument.response.body.content[0].subtitle}}",
+    "notes": "Excited to learn this piece!",
+    "composerName": "Gupegto",
+    "difficulty": "ADVANCED",
+    "status": "PLANNED",
+    "techniqueIds": [],
+    "instrumentation": [
+        {
+            "id": "{{getWorksByInstrument.response.body.content[0].instrumentation[0].id}}",
+            "rank": null,
+            "quantity": 3
+        }
+    ]
+}   
+
+
+
+### Get user works ###
+# @name getUserWorks
+GET http://localhost:8080/api/works?difficulty=BEGINNER&status=LEARNING
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### Get user works by difficulty & status ###
+GET http://localhost:8080/api/works?difficulty=BEGINNER&status=LEARNING
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### Get user work by ID ###
+GET http://localhost:8080/api/works/{{getUserWorks.response.body.content[0].id}}
+Content-Type: application/json
+Authorization: Bearer {{token}}

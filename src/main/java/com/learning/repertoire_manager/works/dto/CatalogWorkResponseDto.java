@@ -12,6 +12,6 @@ public class CatalogWorkResponseDto {
     UUID id;
     String title;
     String subtitle;
-    String composerName;
+    CatalogComposerResponseDto composer;
     List<InstrumentationResponseDto> instrumentation;
 }

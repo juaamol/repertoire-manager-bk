@@ -37,17 +37,21 @@ public class UserWork {
     private String title;
     private String subtitle;
     private String notes;
+
+    @Enumerated(EnumType.STRING)
     private Difficulty difficulty;
+
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     private Instant createdAt;
     private Instant updatedAt;
 
-    @OneToMany(mappedBy = "userWork", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "work", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserWorkInstrumentation> instrumentations;
 
     @ManyToMany
-    @JoinTable(name = "user_work_techniques", joinColumns = @JoinColumn(name = "user_work_id"), inverseJoinColumns = @JoinColumn(name = "technique_id"))
+    @JoinTable(name = "user_work_techniques", joinColumns = @JoinColumn(name = "work_id"), inverseJoinColumns = @JoinColumn(name = "technique_id"))
     private List<Technique> techniques;
 
     @PrePersist

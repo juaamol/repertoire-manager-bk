@@ -44,7 +44,6 @@ public class WorksController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
     public WorkResponseDto createWork(@RequestBody @Validated WorkCreateRequestDto request) {
         return workService.createWork(request);
     }

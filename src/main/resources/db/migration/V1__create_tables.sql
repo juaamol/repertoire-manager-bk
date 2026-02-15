@@ -97,16 +97,16 @@ CREATE TABLE IF NOT EXISTS user_works (
 
 -- Editable instrumentation for the user's specific copy
 CREATE TABLE IF NOT EXISTS user_work_instrumentation (
-    user_work_id UUID NOT NULL REFERENCES user_works(id) ON DELETE CASCADE,
+    work_id UUID NOT NULL REFERENCES user_works(id) ON DELETE CASCADE,
     instrumentation_id UUID NOT NULL REFERENCES instrumentation(id),
     rank VARCHAR(50) NOT NULL DEFAULT '',
     quantity INTEGER DEFAULT 1,
-    PRIMARY KEY (user_work_id, instrumentation_id, rank)
+    PRIMARY KEY (work_id, instrumentation_id, rank)
 );
 
 -- User's techniques associated with their specific work
 CREATE TABLE IF NOT EXISTS user_work_techniques (
-    user_work_id UUID NOT NULL REFERENCES user_works(id) ON DELETE CASCADE,
+    work_id UUID NOT NULL REFERENCES user_works(id) ON DELETE CASCADE,
     technique_id UUID NOT NULL REFERENCES techniques(id) ON DELETE CASCADE,
-    PRIMARY KEY (user_work_id, technique_id)
+    PRIMARY KEY (work_id, technique_id)
 );

@@ -3,6 +3,7 @@ package com.learning.repertoire_manager.works.dto;
 import lombok.Data;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
@@ -25,4 +26,7 @@ public class WorkCreateRequestDto {
 
     @NotNull(message = "techniqueIds cannot be null")
     private List<UUID> techniqueIds;
+
+    @NotEmpty(message = "instrumentation must reference at least 1 instrument")
+    private List<InstrumentationRequestDto> instrumentation;
 }
