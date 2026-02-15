@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class CatalogComposerResponseDto {
+public class ComposerWorkResponseDto {
     UUID id;
     String name;
 }

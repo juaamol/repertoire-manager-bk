@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class CatalogWorkMapper {
     public CatalogWorkResponseDto toDto(CatalogWork work) {
         CatalogComposer composer = work.getComposer();
-        CatalogComposerResponseDto composerDto = CatalogComposerResponseDto.builder()
+        ComposerWorkResponseDto composerDto = ComposerWorkResponseDto.builder()
                 .id(composer.getId())
                 .name(composer.getName())
                 .build();

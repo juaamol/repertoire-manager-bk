@@ -22,7 +22,7 @@ Content-Type: application/json
 @token = {{ postLogin.response.body.token }}
 
 
-### ---------- Catalog retrieval ----------- ###
+### ---------- Catalog Works ----------- ###
 ### Retrieve catalog works ###
 GET http://localhost:8080/api/catalog-works 
 Content-Type: application/json
@@ -43,6 +43,17 @@ Authorization: Bearer {{token}}
 GET http://localhost:8080/api/catalog-works/{{getWorksByInstrument.response.body.content[0].id}}
 Content-Type: application/json
 Authorization: Bearer {{token}}
+
+### ---------- Catalog Composers ----------- ###
+### Retrieve catalog composers ###
+GET http://localhost:8080/api/catalog-composers
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### Retrieve catalog composers by name ###
+GET http://localhost:8080/api/catalog-composers?name=Bach    
+Content-Type: application/json
+Authorization: Bearer {{token}} 
 
 ### ---------- User Works ----------- ###
 ### Create user work from catalog work  with composerId ###
@@ -102,12 +113,13 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 ### Get user work by ID ###
+# @name getUserWorkById
 GET http://localhost:8080/api/works/{{getUserWorks.response.body.content[0].id}}
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 ### Update user work by ID ###
-PUT http://localhost:8080/api/works/{{getUserWorks.response.body.content[0].id}}
+PUT http://localhost:8080/api/works/{{getUserWorkById.response.body.id}}
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
