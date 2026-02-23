@@ -11,10 +11,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.UUID;
 
 public interface CatalogComposerRepository extends JpaRepository<CatalogComposer, UUID> {
-    @Query("""
-          SELECT DISTINCT composer
-          FROM CatalogComposer composer
-          WHERE :name IS NULL OR LOWER(composer.name) LIKE LOWER(CONCAT('%', CAST(:name AS string), '%'))
-      """)
+    @Query(value = "SELECT * FROM search_catalog_composers(:name)", countQuery = "SELECT count(*) FROM search_catalog_composers(:name)", nativeQuery = true)
     Page<CatalogComposer> findByName(@Param("name") String name, Pageable pageable);
 }

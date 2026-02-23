@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS catalog_work_identifiers (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     work_id UUID NOT NULL REFERENCES catalog_works(id) ON DELETE CASCADE,
     value VARCHAR(50) NOT NULL,
+    display_value TEXT GENERATED ALWAYS AS (replace(value, ':', ' No.')) STORED,
     UNIQUE(work_id, value)
 );
 

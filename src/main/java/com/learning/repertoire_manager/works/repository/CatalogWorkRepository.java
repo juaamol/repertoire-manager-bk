@@ -14,28 +14,12 @@ import java.util.UUID;
 @Repository
 public interface CatalogWorkRepository extends JpaRepository<CatalogWork, UUID> {
 
-  Optional<CatalogWork> findById(UUID workId, UUID userId);
+    Optional<CatalogWork> findById(UUID workId, UUID userId);
 
-  @Query("""
-          SELECT DISTINCT work
-          FROM CatalogWork work
-          LEFT JOIN work.composer composer
-          LEFT JOIN work.instrumentations workInstRelation
-          LEFT JOIN workInstRelation.instrumentation instrument
-          WHERE (
-              :composerName IS NULL OR
-              LOWER(composer.name) LIKE LOWER(CONCAT('%', CAST(:composerName AS string), '%'))
-            )
-            AND (:instrumentName IS NULL OR instrument.name = :instrumentName)
-      """)
-  Page<CatalogWork> findByFilters(
-      @Param("composerName") String composerName,
-      @Param("instrumentName") String instrumentName,
-      Pageable pageable);
-
-  @Query(value = "SELECT * FROM search_catalog_works(:comp, :title)", countQuery = "SELECT count(*) FROM search_catalog_works(:comp, :title)", nativeQuery = true)
-  Page<CatalogWork> search(
-      @Param("comp") String composer,
-      @Param("title") String titleSubtitle,
-      Pageable pageable);
+    @Query(value = "SELECT * FROM search_catalog_works(:query, :composerId, CAST(:instrumentIds AS uuid[]))", countQuery = "SELECT count(*) FROM search_catalog_works(:query, :composerId, CAST(:instrumentIds AS uuid[]))", nativeQuery = true)
+    Page<CatalogWork> search(
+            @Param("query") String query,
+            @Param("composerId") UUID composerId,
+            @Param("instrumentIds") UUID[] instrumentIds,
+            Pageable pageable);
 }

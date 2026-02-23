@@ -27,16 +27,11 @@ public class CatalogWorkService {
         }
 
         @Transactional(readOnly = true)
-        public Page<CatalogWorkResponseDto> getWorksWithFilters(
-                        String composer,
-                        String instrument,
+        public Page<CatalogWorkResponseDto> search(
+                        String query,
+                        UUID composerId,
+                        UUID[] instrumentationIds,
                         Pageable pageable) {
-
-                return workRepository.findByFilters(composer, instrument, pageable).map(workMapper::toDto);
-        }
-
-        @Transactional(readOnly = true)
-        public Page<CatalogWorkResponseDto> search(String composer, String titleSubtitle, Pageable pageable) {
-                return workRepository.search(composer, titleSubtitle, pageable).map(workMapper::toDto);
+                return workRepository.search(query, composerId, instrumentationIds, pageable).map(workMapper::toDto);
         }
 }
