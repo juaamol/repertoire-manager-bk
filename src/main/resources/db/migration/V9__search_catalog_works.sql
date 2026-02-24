@@ -51,6 +51,9 @@ RETURNS TABLE (
     catalog_display TEXT,
     relevance REAL
 ) AS $$
+DECLARE
+    v_query TEXT := f_unaccent(trim(COALESCE(p_query, '')));
+    v_ts_query tsquery := websearch_to_tsquery('simple', v_query);
 BEGIN
     RETURN QUERY
     WITH RECURSIVE target_instruments AS (
@@ -65,7 +68,7 @@ BEGIN
         JOIN target_instruments ti ON i.parent_id = ti.id 
     ),
     work_ids AS (
-        SELECT  work_id, string_agg(display_value, ' | ') as all_values
+        SELECT work_id, string_agg(display_value, ' | ') as all_values
         FROM catalog_work_identifiers 
         GROUP BY work_id
     )
@@ -76,12 +79,26 @@ BEGIN
         c.name as composer_name, 
         COALESCE(ids.all_values, '') as catalog_display,
         (
-            similarity(f_unaccent(w.title), f_unaccent(p_query)) * 4.0 +
-            similarity(f_unaccent(COALESCE(w.classification, '')), f_unaccent(p_query)) * 1.0 +
-            CASE 
-                WHEN ids.all_values ILIKE '%' || p_query || '%' THEN 3.0
-                ELSE similarity(f_unaccent(COALESCE(ids.all_values, '')), f_unaccent(p_query)) * 2.0 
-            END
+            -- Exact Title Match
+            (CASE WHEN f_unaccent(w.title) ILIKE v_query THEN 10.0 ELSE 0.0 END) +
+
+            -- Full-Text Rank
+            (ts_rank_cd(to_tsvector('simple', f_unaccent(w.title)), v_ts_query) * 8.0) +
+
+            -- Identifier Match
+            (CASE 
+                WHEN f_unaccent(ids.all_values) ILIKE '%' || v_query || '%' THEN 8.0 
+                ELSE (word_similarity(v_query, f_unaccent(COALESCE(ids.all_values, ''))) * 7.0) 
+             END) +
+
+            -- Title Word Similarity
+            (word_similarity(v_query, f_unaccent(w.title)) * 6.0) +
+
+            -- Classification Similarity
+            (word_similarity(v_query, f_unaccent(COALESCE(w.classification, ''))) * 3.0) +
+
+            -- Trigram Similarity
+            (similarity(v_query, f_unaccent(w.title)) * 2.0)
         )::REAL AS relevance
     FROM catalog_works w
     JOIN catalog_composers c ON w.composer_id = c.id
@@ -97,16 +114,17 @@ BEGIN
             WHERE s.work_id = w.id 
             AND alt.instrumentation_id IN (SELECT ti.id FROM target_instruments ti)
         ))
-        
         AND
-
-        (p_query IS NULL OR p_query = '' OR (
-            f_unaccent(w.title) % f_unaccent(p_query)
-            OR f_unaccent(w.title) ILIKE f_unaccent('%' || p_query || '%')
-            OR f_unaccent(COALESCE(w.classification, '')) % f_unaccent(p_query)
-            OR f_unaccent(ids.all_values) ILIKE f_unaccent('%' || p_query || '%')
-            OR f_unaccent(ids.all_values) % f_unaccent(p_query)
+        (v_query = '' OR (
+            v_query <% f_unaccent(w.title)
+            OR to_tsvector('simple', f_unaccent(w.title)) @@ v_ts_query
+            OR f_unaccent(COALESCE(w.classification, '')) % v_query
+            OR f_unaccent(ids.all_values) ILIKE '%' || v_query || '%'
+            OR v_query <% f_unaccent(ids.all_values)
         ))
-    ORDER BY relevance DESC, w.title ASC;
+    ORDER BY 
+        relevance DESC, 
+        LENGTH(w.title) ASC,
+        w.title ASC;
 END;
 $$ LANGUAGE plpgsql STABLE;
