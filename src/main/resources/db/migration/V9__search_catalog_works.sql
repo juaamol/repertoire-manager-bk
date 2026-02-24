@@ -19,11 +19,10 @@ ON catalog_works USING gin (f_unaccent(title) gin_trgm_ops);
 CREATE INDEX IF NOT EXISTS idx_works_class_trgm 
 ON catalog_works USING gin (f_unaccent(COALESCE(classification, '')) gin_trgm_ops);
 
-CREATE INDEX IF NOT EXISTS idx_identifiers_combined_trgm 
-ON catalog_work_identifiers USING gin (f_unaccent(value) gin_trgm_ops);
+CREATE INDEX IF NOT EXISTS idx_identifiers_display_value_trgm 
+ON catalog_work_identifiers USING gin (f_unaccent(display_value) gin_trgm_ops);
 
 -- B-Tree Indexes for Filters
--- These speed up the dropdown filters (Composer and Instrument)
 CREATE INDEX IF NOT EXISTS idx_works_composer_id ON catalog_works(composer_id);
 CREATE INDEX IF NOT EXISTS idx_settings_work_id ON catalog_work_settings(work_id);
 CREATE INDEX IF NOT EXISTS idx_alternatives_setting_id ON catalog_instrumentation_alternatives(setting_id);
@@ -54,17 +53,19 @@ RETURNS TABLE (
 ) AS $$
 BEGIN
     RETURN QUERY
-    WITH 
-    target_instruments AS (
-        WITH RECURSIVE sub_instr AS (
-            SELECT i.id FROM instrumentation i WHERE i.id = ANY(p_instrument_ids)
-            UNION ALL
-            SELECT i.id FROM instrumentation i JOIN sub_instr si ON i.parent_id = si.id 
-        ) 
-        SELECT si.id FROM sub_instr si
+    WITH RECURSIVE target_instruments AS (
+        SELECT i.id 
+        FROM instrumentation i 
+        WHERE i.id = ANY(p_instrument_ids)
+        
+        UNION ALL
+        
+        SELECT i.id 
+        FROM instrumentation i 
+        JOIN target_instruments ti ON i.parent_id = ti.id 
     ),
     work_ids AS (
-        SELECT  work_id, string_agg(value, ' | ') as all_values
+        SELECT  work_id, string_agg(display_value, ' | ') as all_values
         FROM catalog_work_identifiers 
         GROUP BY work_id
     )
@@ -76,10 +77,10 @@ BEGIN
         COALESCE(ids.all_values, '') as catalog_display,
         (
             similarity(f_unaccent(w.title), f_unaccent(p_query)) * 4.0 +
-            similarity(f_unaccent(COALESCE(w.classification, '')), f_unaccent(p_query)) * 1.5 +
+            similarity(f_unaccent(COALESCE(w.classification, '')), f_unaccent(p_query)) * 1.0 +
             CASE 
-                WHEN ids.all_values ILIKE '%' || p_query || '%' THEN 2.5
-                ELSE similarity(f_unaccent(COALESCE(ids.all_values, '')), f_unaccent(p_query)) * 1.0 
+                WHEN ids.all_values ILIKE '%' || p_query || '%' THEN 3.0
+                ELSE similarity(f_unaccent(COALESCE(ids.all_values, '')), f_unaccent(p_query)) * 2.0 
             END
         )::REAL AS relevance
     FROM catalog_works w
@@ -89,7 +90,7 @@ BEGIN
         (p_composer_id IS NULL OR w.composer_id = p_composer_id)
         
         AND
-        
+
         (p_instrument_ids IS NULL OR cardinality(p_instrument_ids) = 0 OR EXISTS (
             SELECT 1 FROM catalog_work_settings s
             JOIN catalog_instrumentation_alternatives alt ON s.id = alt.setting_id
@@ -98,12 +99,13 @@ BEGIN
         ))
         
         AND
-        
+
         (p_query IS NULL OR p_query = '' OR (
             f_unaccent(w.title) % f_unaccent(p_query)
             OR f_unaccent(w.title) ILIKE f_unaccent('%' || p_query || '%')
             OR f_unaccent(COALESCE(w.classification, '')) % f_unaccent(p_query)
             OR f_unaccent(ids.all_values) ILIKE f_unaccent('%' || p_query || '%')
+            OR f_unaccent(ids.all_values) % f_unaccent(p_query)
         ))
     ORDER BY relevance DESC, w.title ASC;
 END;

@@ -18,21 +18,13 @@ public class CatalogWorksController {
     private final CatalogWorkService workService;
 
     @GetMapping
-    public Page<CatalogWorkResponseDto> getWorks(
-            @RequestParam(required = false) String composer,
-            @RequestParam(required = false) String instrument,
-            @PageableDefault(size = 20) Pageable pageable) {
-
-        return workService.getWorksWithFilters(composer, instrument, pageable);
-    }
-
-    @GetMapping("/search")
     public Page<CatalogWorkResponseDto> searchWorks(
-            @RequestParam(required = false) String composer,
-            @RequestParam(required = false) String titleSubtitle,
+        @RequestParam(required = true) UUID composerId,
+        @RequestParam(required = true) String query,
+        @RequestParam(required = true) UUID[] instrumentationIds,
             @PageableDefault(size = 20) Pageable pageable) {
 
-        return workService.search(composer, titleSubtitle, pageable);
+        return workService.search(query, composerId, instrumentationIds, pageable);
     }   
 
     @GetMapping("/{id}")
