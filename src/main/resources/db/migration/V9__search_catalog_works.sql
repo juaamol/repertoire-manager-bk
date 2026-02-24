@@ -86,10 +86,7 @@ BEGIN
             (ts_rank_cd(to_tsvector('simple', f_unaccent(w.title)), v_ts_query) * 8.0) +
 
             -- Identifier Match
-            (CASE 
-                WHEN f_unaccent(ids.all_values) ILIKE '%' || v_query || '%' THEN 8.0 
-                ELSE (word_similarity(v_query, f_unaccent(COALESCE(ids.all_values, ''))) * 7.0) 
-             END) +
+            (similarity(v_query, f_unaccent(COALESCE(ids.all_values, ''))) * 7.0) +
 
             -- Title Word Similarity
             (word_similarity(v_query, f_unaccent(w.title)) * 6.0) +
@@ -107,20 +104,22 @@ BEGIN
         (p_composer_id IS NULL OR w.composer_id = p_composer_id)
         
         AND
-
+        
         (p_instrument_ids IS NULL OR cardinality(p_instrument_ids) = 0 OR EXISTS (
             SELECT 1 FROM catalog_work_settings s
             JOIN catalog_instrumentation_alternatives alt ON s.id = alt.setting_id
             WHERE s.work_id = w.id 
             AND alt.instrumentation_id IN (SELECT ti.id FROM target_instruments ti)
         ))
+
         AND
+
         (v_query = '' OR (
             v_query <% f_unaccent(w.title)
-            OR to_tsvector('simple', f_unaccent(w.title)) @@ v_ts_query
+            OR to_tsvector('simple', f_unaccent(w.title || ' ' || COALESCE(w.classification, ''))) @@ v_ts_query
             OR f_unaccent(COALESCE(w.classification, '')) % v_query
             OR f_unaccent(ids.all_values) ILIKE '%' || v_query || '%'
-            OR v_query <% f_unaccent(ids.all_values)
+            OR v_query % f_unaccent(ids.all_values)
         ))
     ORDER BY 
         relevance DESC, 
