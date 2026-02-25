@@ -5,7 +5,7 @@ import java.util.Arrays;
 import com.learning.repertoire_manager.works.model.Status;
 
 public enum Status {
-    PLANNED, LEARNING, POLISHING, MASTERED, READY;
+    PLANNED, LEARNING, REFINING, POLISHING, MASTERED, ARCHIVED;
 
     public static Status fromString(String value) {
         try {

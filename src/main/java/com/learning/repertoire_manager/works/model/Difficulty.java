@@ -5,7 +5,7 @@ import java.util.Arrays;
 import com.learning.repertoire_manager.works.model.Difficulty;
 
 public enum Difficulty {
-    BEGINNER, INTERMEDIATE, ADVANCED;
+    NOVICE, BEGINNER, INTERMEDIATE, ADVANCED, VIRTUOSO;
 
     public static Difficulty fromString(String value) {
         try {
