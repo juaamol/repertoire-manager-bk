@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "catalog_works")
+@Table(name = "catalog_work")
 @Immutable
 @Getter
 @Setter
@@ -26,8 +26,11 @@ public class CatalogWork {
 
     @Column(nullable = false)
     private String title;
-    private String subtitle;
+    private String classification;
 
     @OneToMany(mappedBy = "work", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CatalogWorkInstrumentation> instrumentations;
+    private List<WorkSetting> settings;
+
+    @OneToMany(mappedBy = "work", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CatalogNumber> identifiers;
 }

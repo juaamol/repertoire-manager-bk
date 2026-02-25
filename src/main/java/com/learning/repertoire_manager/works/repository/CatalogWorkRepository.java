@@ -16,7 +16,7 @@ public interface CatalogWorkRepository extends JpaRepository<CatalogWork, UUID> 
 
     Optional<CatalogWork> findById(UUID workId, UUID userId);
 
-    @Query(value = "SELECT * FROM search_catalog_works(:query, :composerId, CAST(:instrumentIds AS uuid[]))", countQuery = "SELECT count(*) FROM search_catalog_works(:query, :composerId, CAST(:instrumentIds AS uuid[]))", nativeQuery = true)
+    @Query(value = "SELECT * FROM search_catalog_work(:query, :composerId, CAST(:instrumentIds AS uuid[]))", countQuery = "SELECT count(*) FROM search_catalog_work(:query, :composerId, CAST(:instrumentIds AS uuid[]))", nativeQuery = true)
     Page<CatalogWork> search(
             @Param("query") String query,
             @Param("composerId") UUID composerId,

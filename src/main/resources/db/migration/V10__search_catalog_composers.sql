@@ -2,16 +2,16 @@
 -- SEARCH FUNCTION
 -- ==========================================
 
-CREATE OR REPLACE FUNCTION search_catalog_composers(
+CREATE OR REPLACE FUNCTION search_catalog_composer(
     p_name_query TEXT
 )
-RETURNS SETOF catalog_composers AS $$
+RETURNS SETOF catalog_composer AS $$
 DECLARE
     v_name_query TEXT := f_unaccent(p_name_query);
 BEGIN
     RETURN QUERY
     SELECT *
-    FROM catalog_composers composers
+    FROM catalog_composer composers
     WHERE 
         p_name_query IS NOT NULL AND p_name_query != '' AND (
             f_unaccent(composers.name) % v_name_query

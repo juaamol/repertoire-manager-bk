@@ -3,7 +3,7 @@ package com.learning.repertoire_manager.works.mapper;
 import com.learning.repertoire_manager.works.dto.*;
 import com.learning.repertoire_manager.works.model.*;
 
-import java.util.UUID;
+import java.util.List;
 
 import org.springframework.stereotype.Component;
 
@@ -16,20 +16,33 @@ public class CatalogWorkMapper {
                 .name(composer.getName())
                 .build();
 
+        List<WorkSettingResponseDto> settings = work.getSettings()
+                .stream()
+                .map(this::settingToDto)
+                .toList();
+
         return CatalogWorkResponseDto.builder()
                 .id(work.getId())
                 .title(work.getTitle())
-                .subtitle(work.getSubtitle())
+                .subtitle(work.getClassification())
                 .composer(composerDto)
-                .instrumentation(work.getInstrumentations().stream()
-                        .map(i -> {
-                            Instrumentation instrumentation = i.getInstrumentation();
-                            String name = instrumentation.getName();
-                            UUID id = instrumentation.getId();
-
-                            return InstrumentationResponseDto.builder().name(name).id(id).build();
-                        })
-                        .toList())
+                .settings(settings)
                 .build();
+    }
+
+    private WorkSettingResponseDto settingToDto(WorkSetting setting) {
+        List<SettingSlotResponseDto> slots = setting.getSlots().stream()
+                .map(slot -> {
+                    List<InstrumentationResponseDto> alternatives = slot.getAlternatives().stream().map(alternative -> {
+                        Instrumentation instrumentation = alternative.getInstrumentation();
+                        return InstrumentationResponseDto.builder()
+                                .id(instrumentation.getId())
+                                .name(instrumentation.getName())
+                                .build();
+                    }).toList();
+
+                    return SettingSlotResponseDto.builder().alternatives(alternatives).build();
+                }).toList();
+        return WorkSettingResponseDto.builder().slots(slots).build();
     }
 }

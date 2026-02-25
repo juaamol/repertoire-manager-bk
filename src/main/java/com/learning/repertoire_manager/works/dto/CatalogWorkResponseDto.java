@@ -13,5 +13,5 @@ public class CatalogWorkResponseDto {
     String title;
     String subtitle;
     ComposerWorkResponseDto composer;
-    List<InstrumentationResponseDto> instrumentation;
+    List<WorkSettingResponseDto> settings;
 }

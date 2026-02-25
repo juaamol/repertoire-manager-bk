@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 -- Only for composers created by the user
-CREATE TABLE IF NOT EXISTS user_composers (
+CREATE TABLE IF NOT EXISTS user_composer (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     name VARCHAR(255) NOT NULL DEFAULT 'Unknown',
@@ -22,13 +22,13 @@ CREATE TABLE IF NOT EXISTS user_composers (
     UNIQUE(user_id, name)
 );
 
-CREATE TABLE IF NOT EXISTS user_works (
+CREATE TABLE IF NOT EXISTS user_work (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     
     -- Composer source (One must be NOT NULL)
-    catalog_composer_id UUID REFERENCES catalog_composers(id),
-    user_composer_id UUID REFERENCES user_composers(id),
+    catalog_composer_id UUID REFERENCES catalog_composer(id),
+    user_composer_id UUID REFERENCES user_composer(id),
     
     -- Editable fields
     title VARCHAR(255) NOT NULL,
@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS user_works (
 
 -- Editable instrumentation for the user's specific copy
 CREATE TABLE IF NOT EXISTS user_work_instrumentation (
-    work_id UUID NOT NULL REFERENCES user_works(id) ON DELETE CASCADE,
+    work_id UUID NOT NULL REFERENCES user_work(id) ON DELETE CASCADE,
     instrumentation_id UUID NOT NULL REFERENCES instrumentation(id),
     quantity INTEGER DEFAULT 1,
     PRIMARY KEY (work_id, instrumentation_id)
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS user_work_instrumentation (
 
 -- User's techniques associated with their specific work
 CREATE TABLE IF NOT EXISTS user_work_techniques (
-    work_id UUID NOT NULL REFERENCES user_works(id) ON DELETE CASCADE,
+    work_id UUID NOT NULL REFERENCES user_work(id) ON DELETE CASCADE,
     technique_id UUID NOT NULL REFERENCES techniques(id) ON DELETE CASCADE,
     PRIMARY KEY (work_id, technique_id)
 );

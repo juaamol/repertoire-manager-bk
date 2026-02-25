@@ -9,7 +9,7 @@ import java.util.UUID;
 import com.learning.repertoire_manager.user.model.User;
 
 @Entity
-@Table(name = "user_composers")
+@Table(name = "user_composer")
 @Getter
 @Setter
 @NoArgsConstructor

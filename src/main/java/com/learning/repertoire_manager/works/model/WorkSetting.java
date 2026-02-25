@@ -3,28 +3,27 @@ package com.learning.repertoire_manager.works.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 import org.hibernate.annotations.Immutable;
 
 @Entity
-@Table(name = "catalog_composer")
+@Table(name = "work_setting")
 @Immutable
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class CatalogComposer implements Composer {
+public class WorkSetting {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false)
-    private String name;
-    private String shortName;
-    private String epoch;
-    private LocalDate birth;
-    private LocalDate death;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "work_id")
+    private CatalogWork work;
+
+    @OneToMany(mappedBy = "setting", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<InstrumentationSlot> slots;
 }

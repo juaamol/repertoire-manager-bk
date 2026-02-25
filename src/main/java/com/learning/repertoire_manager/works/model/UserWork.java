@@ -10,7 +10,7 @@ import java.util.UUID;
 import com.learning.repertoire_manager.user.model.User;
 
 @Entity
-@Table(name = "user_works")
+@Table(name = "user_work")
 @Getter
 @Setter
 @NoArgsConstructor

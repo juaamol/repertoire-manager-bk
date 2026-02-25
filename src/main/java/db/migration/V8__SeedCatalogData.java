@@ -32,7 +32,7 @@ public class V8__SeedCatalogData extends BaseJavaMigration {
 
                 // Insert Composer
                 try (PreparedStatement ps = connection.prepareStatement(
-                        "INSERT INTO catalog_composers (id, name, short_name, epoch, birth, death) VALUES (?, ?, ?, ?, ?, ?)")) {
+                        "INSERT INTO catalog_composer (id, name, short_name, epoch, birth, death) VALUES (?, ?, ?, ?, ?, ?)")) {
                     ps.setObject(1, composerId);
                     ps.setString(2, composer.get("name").asText());
                     ps.setString(3, composer.get("short_name").asText());
@@ -52,7 +52,7 @@ public class V8__SeedCatalogData extends BaseJavaMigration {
 
                     // Insert Work
                     try (PreparedStatement ps = connection.prepareStatement(
-                            "INSERT INTO catalog_works (id, composer_id, title, classification) VALUES (?, ?, ?, ?)")) {
+                            "INSERT INTO catalog_work (id, composer_id, title, classification) VALUES (?, ?, ?, ?)")) {
                         ps.setObject(1, workId);
                         ps.setObject(2, composerId);
                         ps.setString(3, work.get("title").asText());
@@ -66,7 +66,7 @@ public class V8__SeedCatalogData extends BaseJavaMigration {
                             String value = catalogNumber.asText();
 
                             try (PreparedStatement ps = connection.prepareStatement(
-                                    "INSERT INTO catalog_work_identifiers (work_id, value) VALUES (?, ?)")) {
+                                    "INSERT INTO catalog_number (work_id, value) VALUES (?, ?)")) {
                                 ps.setObject(1, workId);
                                 ps.setString(2, value);
                                 ps.executeUpdate();
@@ -79,25 +79,35 @@ public class V8__SeedCatalogData extends BaseJavaMigration {
                         UUID settingId = UUID.randomUUID();
 
                         try (PreparedStatement ps = connection.prepareStatement(
-                                "INSERT INTO catalog_work_settings (id, work_id, name) VALUES (?, ?, ?)")) {
+                                "INSERT INTO work_setting (id, work_id, name) VALUES (?, ?, ?)")) {
                             ps.setObject(1, settingId);
                             ps.setObject(2, workId);
                             ps.setString(3, "Standard");
                             ps.executeUpdate();
                         }
 
-                        // Insert Instrumentation alternatives
-                        for (JsonNode instrSlot : settingNode.get("instrumentation")) {
-                            for (JsonNode alternative : instrSlot.get("alternatives")) {
-                                String instrName = alternative.get("name").asText();
-                                int quantity = alternative.get("quantity").asInt(1);
-                                UUID instrId = lookupInstrumentationId(connection, instrName);
+                        // Prepare instrumentation "seats"
+                        for (JsonNode instrumentationSlot : settingNode.get("instrumentation")) {
+                            UUID slotId = UUID.randomUUID();
 
-                                if (instrId != null) {
+                            try (PreparedStatement ps = connection.prepareStatement(
+                                    "INSERT INTO instrumentation_slot (id, work_setting_id) VALUES (?, ?)")) {
+                                ps.setObject(1, slotId);
+                                ps.setObject(2, settingId);
+                                ps.executeUpdate();
+                            }
+
+                            // Insert Instrumentation alternatives for a seat
+                            for (JsonNode alternative : instrumentationSlot.get("alternatives")) {
+                                String instrumentationName = alternative.get("name").asText();
+                                int quantity = alternative.get("quantity").asInt(1);
+                                UUID instrumentationId = lookupInstrumentationId(connection, instrumentationName);
+
+                                if (instrumentationId != null) {
                                     try (PreparedStatement ps = connection.prepareStatement(
-                                            "INSERT INTO catalog_instrumentation_alternatives (setting_id, instrumentation_id, quantity) VALUES (?, ?, ?)")) {
-                                        ps.setObject(1, settingId);
-                                        ps.setObject(2, instrId);
+                                            "INSERT INTO instrumentation_alternative (instrumentation_slot_id, instrumentation_id, quantity) VALUES (?, ?, ?)")) {
+                                        ps.setObject(1, slotId);
+                                        ps.setObject(2, instrumentationId);
                                         ps.setInt(3, quantity);
                                         ps.executeUpdate();
                                     }
@@ -119,7 +129,7 @@ public class V8__SeedCatalogData extends BaseJavaMigration {
                 }
             }
         }
-        
+
         throw new RuntimeException("Instrumentation not found: " + name);
     }
 }

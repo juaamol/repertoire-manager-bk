@@ -9,34 +9,33 @@ import java.util.UUID;
 import org.hibernate.annotations.Immutable;
 
 @Entity
-@Table(name = "catalog_work_instrumentation")
+@Table(name = "instrumentation_alternative")
 @Immutable
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CatalogWorkInstrumentation {
+public class InstrumentationAlternative {
     @EmbeddedId
-    private CatalogWorkInstrumentationId id;
+    private InstrumentationAlternativeId id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("workId")
-    @JoinColumn(name = "work_id")
-    private CatalogWork work;
+    @MapsId("instrumentationSlotId")
+    @JoinColumn(name = "instrumentation_slot_id")
+    private InstrumentationSlot slot;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("instrumentationId")
     @JoinColumn(name = "instrumentation_id")
     private Instrumentation instrumentation;
-    private Integer quantity;
 }
 
 @Embeddable
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-class CatalogWorkInstrumentationId implements Serializable {
-    private UUID workId;
+class InstrumentationAlternativeId implements Serializable {
+    private UUID instrumentationSlotId;
     private UUID instrumentationId;
-    private String rank;
+    private Integer quantity;
 }
