@@ -24,7 +24,7 @@ public class CatalogWorkMapper {
         return CatalogWorkResponseDto.builder()
                 .id(work.getId())
                 .title(work.getTitle())
-                .subtitle(work.getClassification())
+                .classification(work.getClassification())
                 .composer(composerDto)
                 .settings(settings)
                 .build();

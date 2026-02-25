@@ -11,7 +11,7 @@ import lombok.Data;
 public class CatalogWorkResponseDto {
     UUID id;
     String title;
-    String subtitle;
+    String classification;
     ComposerWorkResponseDto composer;
     List<WorkSettingResponseDto> settings;
 }

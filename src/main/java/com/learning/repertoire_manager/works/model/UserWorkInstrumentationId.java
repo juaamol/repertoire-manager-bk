@@ -13,5 +13,4 @@ import java.util.UUID;
 public class UserWorkInstrumentationId implements Serializable {
     private UUID workId;
     private UUID instrumentationId;
-    private String rank;
 }

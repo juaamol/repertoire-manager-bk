@@ -48,6 +48,7 @@ RETURNS TABLE (
     id UUID,
     title VARCHAR,
     classification VARCHAR,
+    composer_id UUID,
     composer_name VARCHAR,
     catalog_display TEXT,
     relevance REAL
@@ -77,6 +78,7 @@ BEGIN
         w.id, 
         w.title, 
         w.classification, 
+        c.id as composer_id,
         c.name as composer_name, 
         COALESCE(ids.all_values, '') as catalog_display,
         (

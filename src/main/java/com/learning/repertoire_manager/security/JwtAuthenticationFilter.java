@@ -59,8 +59,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     new WebAuthenticationDetailsSource().buildDetails(request));
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            System.out.println("Token valid for user: " + token);
-
         } catch (Exception e) {
             // Invalid token
         }

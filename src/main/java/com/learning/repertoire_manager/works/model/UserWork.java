@@ -35,7 +35,7 @@ public class UserWork {
 
     @Column(nullable = false)
     private String title;
-    private String subtitle;
+    private String classification;
     private String notes;
 
     @Enumerated(EnumType.STRING)

@@ -21,44 +21,24 @@ Content-Type: application/json
 ### Token
 @token = {{ postLogin.response.body.token }}
 
+### ---------- Catalog Composers ----------- ###
+### Retrieve catalog composers by name ###
+# @name getComposerByName
+GET http://localhost:8080/api/catalog-composers?name=Pachebel    
+Content-Type: application/json
+Authorization: Bearer {{token}}
 
 ### ---------- Catalog Works ----------- ###
-### Retrieve catalog works ###
-GET http://localhost:8080/api/catalog-works 
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
 ### Retrieve catalog works by composer ###
-GET http://localhost:8080/api/catalog-works?composer=Vivaldi
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-### Retrieve catalog works by instrument ###
-# @name getWorksByInstrument
-GET http://localhost:8080/api/catalog-works?instrument=Violin
+# @name getWorksBySearch
+GET http://localhost:8080/api/catalog-works?composerId={{getComposerByName.response.body.content[0].id}}&query=Canon&instrumentationIds=
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 ### Get catalog work by ID ###
-GET http://localhost:8080/api/catalog-works/{{getWorksByInstrument.response.body.content[0].id}}
+GET http://localhost:8080/api/catalog-works/{{getWorksBySearch.response.body.content[0].id}}
 Content-Type: application/json
 Authorization: Bearer {{token}}
-
-### Get catalog work by title and composer name ###
-GET http://localhost:8080/api/catalog-works/search?composer=Bach&titleSubtitle=Aria
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-### ---------- Catalog Composers ----------- ###
-### Retrieve catalog composers ###
-GET http://localhost:8080/api/catalog-composers
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-### Retrieve catalog composers by name ###
-GET http://localhost:8080/api/catalog-composers?name=Bach    
-Content-Type: application/json
-Authorization: Bearer {{token}} 
 
 ### ---------- User Works ----------- ###
 ### Create user work from catalog work  with composerId ###
@@ -67,18 +47,16 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "title": "{{getWorksByInstrument.response.body.content[0].title}}",
-    "subtitle": "{{getWorksByInstrument.response.body.content[0].subtitle}}",
+    "title": "{{getWorksBySearch.response.body.content[0].title}}",
+    "classification": "My custom classification",
     "notes": "Excited to learn this piece!",
-    "composerId": "{{getWorksByInstrument.response.body.content[0].composer.id}}",
+    "composerId": "{{getWorksBySearch.response.body.content[0].composer.id}}",
     "difficulty": "BEGINNER",
     "status": "LEARNING",
     "techniqueIds": [],
     "instrumentation": [
         {
-            "id": "{{getWorksByInstrument.response.body.content[0].instrumentation[0].id}}",
-            "rank": null,
-            "quantity": 3
+            "id": "{{getWorksBySearch.response.body.content[0].settings[0].slots[0].alternatives[0].id}}"
         }
     ]
 }   
@@ -89,8 +67,8 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "title": "{{getWorksByInstrument.response.body.content[0].title}}",
-    "subtitle": "{{getWorksByInstrument.response.body.content[0].subtitle}}",
+    "title": "{{getWorksBySearch.response.body.content[0].title}}",
+    "classification": "{{getWorksBySearch.response.body.content[0].classification}}",
     "notes": "Excited to learn this piece!",
     "composerName": "Gupegto",
     "difficulty": "ADVANCED",
@@ -98,9 +76,7 @@ Authorization: Bearer {{token}}
     "techniqueIds": [],
     "instrumentation": [
         {
-            "id": "{{getWorksByInstrument.response.body.content[0].instrumentation[0].id}}",
-            "rank": null,
-            "quantity": 3
+            "id": "{{getWorksBySearch.response.body.content[0].settings[0].slots[0].alternatives[0].id}}"
         }
     ]
 }   
@@ -130,7 +106,7 @@ Authorization: Bearer {{token}}
 
 {
     "title": "Updated title",
-    "subtitle": "Updated subtitle",
+    "classification": "Updated classification",
     "notes": "Updated notes for this piece",
     "status": "READY"
 }

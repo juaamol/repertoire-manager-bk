@@ -35,7 +35,7 @@ public class UserWorkService {
                 UserWork work = UserWork.builder()
                                 .user(User.builder().id(userId).build())
                                 .title(request.getTitle())
-                                .subtitle(request.getSubtitle())
+                                .classification(request.getClassification())
                                 .notes(request.getNotes())
                                 .difficulty(Difficulty.fromString(request.getDifficulty()))
                                 .status(Status.fromString(request.getStatus()))
@@ -70,8 +70,8 @@ public class UserWorkService {
                 if (request.getTitle() != null)
                         work.setTitle(request.getTitle());
 
-                if (request.getSubtitle() != null)
-                        work.setSubtitle(request.getSubtitle());
+                if (request.getClassification() != null)
+                        work.setClassification(request.getClassification());
 
                 if (request.getNotes() != null)
                         work.setNotes(request.getNotes());
@@ -126,15 +126,14 @@ public class UserWorkService {
         private List<UserWorkInstrumentation> buildInstrumentationFromDtos(UserWork work,
                         List<InstrumentationRequestDto> dtos) {
                 return dtos.stream().map(dto -> {
-                        String rank = (dto.getRank() != null) ? dto.getRank() : "";
 
                         Instrumentation instrumentation = instrumentationRepository.findById(dto.getId())
                                         .orElseThrow(() -> new ResourceNotFoundException(
                                                         "Instrumentation not found: " + dto.getId()));
 
-                        UserWorkInstrumentationId workInstrumentationId = new UserWorkInstrumentationId(work.getId(),
-                                        instrumentation.getId(),
-                                        rank);
+                        UserWorkInstrumentationId workInstrumentationId = new UserWorkInstrumentationId(
+                                        work.getId(),
+                                        instrumentation.getId());
 
                         return UserWorkInstrumentation.builder()
                                         .id(workInstrumentationId)

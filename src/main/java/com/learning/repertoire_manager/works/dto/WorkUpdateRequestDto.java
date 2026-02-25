@@ -14,7 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class WorkUpdateRequestDto {
     private String title;
-    private String subtitle;
+    private String classification;
     private String notes;
     private UUID composerId;
     private String difficulty;

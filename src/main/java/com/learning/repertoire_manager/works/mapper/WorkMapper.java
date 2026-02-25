@@ -17,7 +17,7 @@ public class WorkMapper {
         return WorkResponseDto.builder()
                 .id(work.getId())
                 .title(work.getTitle())
-                .subtitle(work.getSubtitle())
+                .classification(work.getClassification())
                 .composerName(composerName)
                 .difficulty(work.getDifficulty().toString())
                 .status(work.getStatus().toString())

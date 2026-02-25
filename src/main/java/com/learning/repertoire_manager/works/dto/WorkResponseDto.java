@@ -11,7 +11,7 @@ import lombok.Data;
 public class WorkResponseDto {
     UUID id;
     String title;
-    String subtitle;
+    String classification;
     String composerName;
     String difficulty;
     String status;

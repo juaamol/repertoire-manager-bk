@@ -13,7 +13,7 @@ import java.util.UUID;
 public class WorkCreateRequestDto {
     @NotBlank(message = "title is required")
     private String title;
-    private String subtitle;
+    private String classification;
     private String notes;
     private UUID composerId;
     private String composerName;
