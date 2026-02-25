@@ -21,6 +21,12 @@ Content-Type: application/json
 ### Token
 @token = {{ postLogin.response.body.token }}
 
+### ---------- Instrumentations ----------- ###
+### Retrieve instrumentations tree ###
+GET http://localhost:8080/api/instrumentations?query=Violi    
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
 ### ---------- Catalog Composers ----------- ###
 ### Retrieve catalog composers by name ###
 # @name getComposerByName
